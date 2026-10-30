@@ -224,6 +224,14 @@ func (m Model) renderMessageBlock(msg ChatMessage, mc color.Color) string {
 		text := lipgloss.NewStyle().Foreground(theme.Current().Text).Render(termtext.StableWidth(msg.Content))
 		var entry strings.Builder
 		entry.WriteString(renderUserTextBlock(text, m.paneWidth()-8, prefix))
+		if len(msg.Attachments) > 0 {
+			// The files it was sent with, by name, under the message.
+			for i, att := range msg.Attachments {
+				entry.WriteString("\n")
+				entry.WriteString(styleMuted.Render(termtext.Fit("     "+chipLabel(att, i)+"  "+att.RelPath, m.transcriptWidth())))
+			}
+			return entry.String()
+		}
 		for i := range msg.Images {
 			imgLabel := styleMuted.Render(fmt.Sprintf("     [Image #%d]", i+1))
 			entry.WriteString("\n")

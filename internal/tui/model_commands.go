@@ -297,8 +297,10 @@ func (m Model) handlePromptWith(input, body string) (tea.Model, tea.Cmd) {
 	}
 	sentAttachments := append([]attachmentItem(nil), m.attachments...)
 	m.attachments = nil
+	m.chipHover = 0
 	if m.thinking {
 		m.queuePrompt(input, prompt, mentionedFiles, imagePaths)
+		m.pendingPrompts[len(m.pendingPrompts)-1].Attachments = sentAttachments
 		m.pushSystemMsg(fmt.Sprintf("queued request: %s", truncateLabel(input, 140)))
 		if len(sentAttachments) > 0 {
 			m.pushSystemMsg(fmt.Sprintf("(with %d attachment(s))", len(sentAttachments)))
@@ -312,6 +314,7 @@ func (m Model) handlePromptWith(input, body string) (tea.Model, tea.Cmd) {
 		Prompt:         prompt,
 		MentionedFiles: mentionedFiles,
 		Images:         imagePaths,
+		Attachments:    sentAttachments,
 	})
 }
 
@@ -325,10 +328,11 @@ func (m Model) startPromptRun(req queuedPrompt) (tea.Model, tea.Cmd) {
 	m.clearSettledWorkflow()
 	m.ensureSession()
 	m.messages = append(m.messages, ChatMessage{
-		Role:    RoleUser,
-		Content: req.Input,
-		Images:  req.Images,
-		At:      time.Now(),
+		Role:        RoleUser,
+		Content:     req.Input,
+		Images:      req.Images,
+		Attachments: req.Attachments,
+		At:          time.Now(),
 	})
 	m.awaitingInstead = false
 	m.publishRemote("user_message", map[string]any{

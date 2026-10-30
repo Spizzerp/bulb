@@ -47,11 +47,31 @@ receives them as context alongside your message.
 2. Type the **absolute path** or **relative path** of a file in the workspace.
 3. Press `Enter` to attach it.
 
-An attachment chip appears below the input area:
+An attachment chip appears in the input box, above the text:
 
 ```
-[file: src/main.go]
+▤ main.go [1]   click to preview · ctrl+r removes last
 ```
+
+### Drag and drop files
+
+Drag one or more files from Finder (or any file manager) onto the terminal
+window. Each becomes a chip — `▣` for an image, `▤` for a document — and the
+text you are typing is left exactly as it was.
+
+- **Hover** a chip to see the file's full path in the status bar.
+- **Click** a chip to preview its content full screen: a document's text, or
+  an image drawn in the terminal. `↑`/`↓`, `PgUp`/`PgDn` and the wheel scroll;
+  `Esc` or a click closes it.
+- The message you send lists the files it was sent with, under your text.
+
+Terminals deliver a drop as a paste of the files' paths, so a paste counts as a
+drop only when it is nothing but paths to files that exist (quoted or
+backslash-escaped, as Terminal.app, iTerm2, Ghostty, kitty, WezTerm and
+Windows Terminal write them, or `file://` URLs). Anything else — including a
+path to a file that does not exist — is pasted as text. A file from outside the
+project is named by its full path. Images need a vision-capable model, as with
+`Ctrl+V`.
 
 ### Remove an attachment
 
@@ -63,13 +83,15 @@ An attachment chip appears below the input area:
 When you submit your prompt, every attached file is:
 
 1. Read from disk.
-2. Included in the LLM request alongside your prompt text.
+2. Included in the LLM request alongside your prompt text (an image through
+   the model's image input, a document as text).
 3. The attachment chips are cleared after submission (one-shot).
 
-If you have 2 or more attachments, a system message is added to the transcript:
+The sent message lists its attachments under your text:
 
 ```
-(with 2 attachments)
+› summarise this
+     ▤ notes.md [1]  notes.md
 ```
 
 Attachments are a convenience for `@`-mention-style file context. They do not
@@ -111,6 +133,8 @@ assistant's response to another application.
 | `Ctrl+V` | Paste image from clipboard (vision-capable models only). |
 | `Ctrl+F` | Attach a workspace file path. |
 | `Ctrl+R` | Remove the most recent attachment. |
+| Drag & drop | Attach the dropped files as chips; hover for the path, click to preview. |
+| `Shift+Enter` | New line in the message (`Alt+Enter` / `Ctrl+J` in any terminal). |
 | `Ctrl+Y` | Copy the last assistant response to clipboard. |
 | `Ctrl+T` | Toggle text-select mode (mouse capture on/off). |
 | `Ctrl+O` | Toggle expanded tool detail in the side panel. |

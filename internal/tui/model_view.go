@@ -37,6 +37,11 @@ func (m Model) View() tea.View {
 	// selection works (see the KeyPressMsg handler in update()).
 	if m.mouseCaptureOff {
 		v.MouseMode = tea.MouseModeNone
+	} else if len(m.attachments) > 0 && m.activeModal() == modalNone {
+		// Chips show their path on hover, which needs motion reports with
+		// no button down. Only while chips are on screen: all-motion makes
+		// the terminal send an event for every cell the pointer crosses.
+		v.MouseMode = tea.MouseModeAllMotion
 	} else {
 		v.MouseMode = tea.MouseModeCellMotion
 	}
@@ -579,7 +584,8 @@ func clampTextLines(lines []string, maxLines, width int) []string {
 // place the input is drawn goes through here so the effect cannot appear in
 // one input state and vanish in another.
 func (m Model) inputTextareaView() string {
-	return highlightWorkflowInput(m.ta.View(), m.eyeFrame, m.budgetDirectivesLive())
+	view := underlineMisspelled(m.ta.View(), m.ta.Value(), m.spellMarks())
+	return highlightWorkflowInput(view, m.eyeFrame, m.budgetDirectivesLive())
 }
 
 // boxContentWidth is the room inside the input box for a box width cells
@@ -1134,6 +1140,12 @@ func (m Model) viewStatusBar(width int) string {
 }
 
 func (m Model) statusBarMessage() string {
+	if m.chipHover > 0 && m.chipHover <= len(m.attachments) {
+		// The hovered chip's full path. A long one keeps its end (the file
+		// name) and is cut at its start; viewStatusBar cuts at the end.
+		path := m.attachments[m.chipHover-1].Path
+		return styleMuted.Render("▸ " + termtext.FitLeft(path, max(m.paneWidth()/2, 20)))
+	}
 	if m.banner != "" {
 		return renderStatusBanner(m.banner, m.bannerKind)
 	}

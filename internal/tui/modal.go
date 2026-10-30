@@ -26,6 +26,7 @@ const (
 	modalThemePicker
 	modalSetup
 	modalApprovalReview
+	modalChipPreview
 )
 
 // activeModal returns the highest-precedence active overlay. The precedence is
@@ -48,6 +49,10 @@ func (m Model) activeModal() modal {
 		// Opened from the approval dialog, which only takes keys when no
 		// other overlay is up, so nothing else can be open underneath.
 		return modalApprovalReview
+	case m.chipPreview > 0:
+		// Opened by clicking an attachment chip in the input box, which is
+		// only on screen when no other overlay is.
+		return modalChipPreview
 	case m.showResume:
 		return modalResume
 	case m.showMemoryReview:
@@ -103,4 +108,7 @@ var modalHandlers = map[modal]modalHandler{
 	// The approval review takes the whole screen: see
 	// dialog_approval_review.go.
 	modalApprovalReview: {update: Model.updateApprovalReview, view: Model.viewApprovalReview},
+
+	// A clicked attachment chip's content (attachment_chips.go).
+	modalChipPreview: {update: Model.updateChipPreview, view: Model.viewChipPreview},
 }

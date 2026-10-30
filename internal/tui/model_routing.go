@@ -39,6 +39,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if save := nm.uiStateSaveCmd(); save != nil {
 			cmd = tea.Batch(cmd, save)
 		}
+		if spell := nm.scheduleSpellCheck(); spell != nil {
+			cmd = tea.Batch(cmd, spell)
+		}
 		return nm, cmd
 	}
 	return newModel, cmd
@@ -574,6 +577,10 @@ func (m Model) update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m.handleSpettroLoaded(msg)
 	case updateCheckMsg:
 		return m.handleUpdateCheck(msg)
+	case spellTickMsg:
+		return m.handleSpellTick(msg)
+	case spellResultMsg:
+		return m.handleSpellResult(msg)
 	case updateAppliedMsg:
 		return m.handleUpdateApplied(msg)
 	case repoFilesScannedMsg:
@@ -663,6 +670,8 @@ func (m Model) update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if m.textSel.active && (mm.Button == tea.MouseLeft || m.textSel.dragging) {
 				m.textSel.dragging = true
 				m.textSel.endX, m.textSel.endY = mm.X, mm.Y
+			} else if mm.Button == tea.MouseNone {
+				m.hoverChip(mm.X, mm.Y)
 			}
 			return m, tea.Batch(cmds...)
 		case tea.MouseReleaseMsg:
@@ -710,6 +719,21 @@ func (m Model) update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case tea.MouseWheelDown:
 				m = m.scrollApprovalReview(3)
 			}
+			return m, tea.Batch(cmds...)
+		}
+		if m.activeModal() == modalChipPreview {
+			switch mouse.Button {
+			case tea.MouseWheelUp:
+				m.chipPreviewScroll = max(m.chipPreviewScroll-3, 0)
+			case tea.MouseWheelDown:
+				m.chipPreviewScroll += 3
+			case tea.MouseLeft:
+				m.closeChipPreview()
+			}
+			return m, tea.Batch(cmds...)
+		}
+		if mouse.Button == tea.MouseLeft && m.clickChip(mouse.X, mouse.Y) {
+			m.textSel = textSelection{}
 			return m, tea.Batch(cmds...)
 		}
 		sideW := m.sidePanelWidth()
@@ -796,6 +820,17 @@ func (m Model) update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		return m, tea.Batch(cmds...)
 	case tea.PasteMsg:
+		// A drag-and-drop from a file manager arrives as a paste of the
+		// files' paths; in the main input it becomes attachment chips and
+		// leaves the draft alone (see droppedPaths). The attach prompt takes
+		// a path as text, so a drop there is pasted as usual.
+		if m.activeModal() == modalNone && !m.showAttachPrompt && m.pendingAuth == nil &&
+			!m.showPlanApproval && !m.showSteerChoice {
+			if paths, ok := droppedPaths(msg.Content, m.cwd); ok {
+				m.attachDropped(paths)
+				return m, tea.Batch(cmds...)
+			}
+		}
 		// Bracketed paste is not a KeyPressMsg, so it bypasses the modal key
 		// routing below. Forward it to the textarea when the active modal is
 		// in a text-entry step (API key / endpoint / setup input); otherwise

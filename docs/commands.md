@@ -100,6 +100,9 @@
 | `v` | In an approval dialog: open the full-screen review of everything being approved (see the approval notes below). In the review, `v`, `Esc` or `q` return to the dialog. |
 | `Ctrl+C` twice | Quit with safety confirmation. |
 | `Ctrl+Q` | Quit immediately. |
+| `Enter` | Send the message. |
+| `Shift+Enter` | New line in the message (also in an `ask-user` free-text answer). Needs a terminal that reports modified keys (Ghostty, kitty, WezTerm, Windows Terminal, iTerm2 with "report keys using CSI u"); `Alt+Enter` (`Option+Return`) and `Ctrl+J` do the same in every terminal. |
+| Drag & drop | Drop files from Finder or a file manager onto the terminal to attach them as chips; the text you are typing is left alone. Hover a chip for its full path, click it to preview it. See [Clipboard and Attachments](clipboard.md#drag-and-drop-files). |
 | `Ctrl+V` | Paste image from clipboard (vision-capable models only). |
 | `Ctrl+F` | Attach a workspace file path to your next prompt. |
 | `Ctrl+R` | Remove the most recent attachment. |
@@ -112,6 +115,7 @@
 
 ## Notes
 
+- Misspelled words in the input box get a curly red underline (a straight one where the terminal has no curly underline) once you pause typing. The check uses the system's own spell checker — macOS's, with your languages and learned words, or `aspell`/`hunspell` on Linux when installed — so nothing is bundled, and nothing is marked where no checker exists. Code is left alone: words in backticks, paths, `@mentions`, `/commands`, `camelCase` and words with digits or underscores. `"spell_check_disabled": true` in `config.json` turns it off.
 - While a run streams, the status bar shows a live ticker: elapsed time and tokens streamed.
 - Diffs highlight the changed words *within* modified lines, in both unified and side-by-side layouts.
 - `/approve` requires a pending plan (typically produced in `plan` mode).

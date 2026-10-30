@@ -71,6 +71,18 @@ func (m Model) updateMain(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 		}
 		m.showBanner("no response to copy yet", "info")
 		return m, nil
+	case "shift+enter", "alt+enter", "ctrl+j":
+		// A new line in the draft, never a submit (see newlineKeys). The
+		// one-line attach prompt takes a path, so it has no second line.
+		if m.showAttachPrompt {
+			return m, nil
+		}
+		m.ta.InsertString("\n")
+		m.cmdItems = nil
+		if cmd := m.syncInputSuggestions(); cmd != nil {
+			return m, cmd
+		}
+		return m, nil
 	case "ctrl+v":
 		if m.showAttachPrompt {
 			break // let textarea handle text paste in attach mode

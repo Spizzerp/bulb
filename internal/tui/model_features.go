@@ -2,15 +2,10 @@ package tui
 
 import (
 	"fmt"
-	"image/color"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
-
-	"charm.land/lipgloss/v2"
-
-	"spettro/internal/theme"
 )
 
 // ---------------------------------------------------------------------------
@@ -47,9 +42,17 @@ func (m *Model) notifyIfUnfocused(body string) {
 
 // addAttachment resolves path relative to cwd and appends an attachmentItem.
 func (m *Model) addAttachment(rawPath string) {
+	if label, ok := m.attachFile(rawPath); ok {
+		m.showBanner(fmt.Sprintf("attached: %s (%d total)", label, len(m.attachments)), "success")
+	}
+}
+
+// attachFile adds one attachment and returns its label, or reports the
+// reason it was refused in a banner and returns false.
+func (m *Model) attachFile(rawPath string) (string, bool) {
 	rawPath = strings.TrimSpace(rawPath)
 	if rawPath == "" {
-		return
+		return "", false
 	}
 	abs := rawPath
 	if !filepath.IsAbs(rawPath) {
@@ -58,17 +61,19 @@ func (m *Model) addAttachment(rawPath string) {
 	abs = filepath.Clean(abs)
 	if _, err := os.Stat(abs); err != nil {
 		m.showBanner("file not found: "+rawPath, "error")
-		return
+		return "", false
 	}
 	rel, err := filepath.Rel(m.cwd, abs)
-	if err != nil {
-		rel = rawPath
+	if err != nil || strings.HasPrefix(rel, "..") {
+		// A file from outside the project (a drop from ~/Downloads) is
+		// named by its full path: a run of ../../ says nothing useful.
+		rel = abs
 	}
 	// Prevent duplicates
 	for _, existing := range m.attachments {
 		if existing.Path == abs {
 			m.showBanner("already attached: "+rel, "info")
-			return
+			return "", false
 		}
 	}
 	// Image files go through the provider's vision channel, not inlined into
@@ -78,7 +83,7 @@ func (m *Model) addAttachment(rawPath string) {
 	case ".png", ".jpg", ".jpeg", ".webp", ".gif":
 		if !m.providers.SupportsVision(m.cfg.ActiveProvider, m.cfg.ActiveModel) {
 			m.showBanner("current model does not support vision", "error")
-			return
+			return "", false
 		}
 		kind = "image"
 	}
@@ -87,7 +92,7 @@ func (m *Model) addAttachment(rawPath string) {
 		Path:    abs,
 		RelPath: filepath.ToSlash(rel),
 	})
-	m.showBanner(fmt.Sprintf("attached: %s (%d total)", rel, len(m.attachments)), "success")
+	return rel, true
 }
 
 // injectAttachments appends each file attachment's content to the prompt.
@@ -122,29 +127,4 @@ func (m *Model) ensureClipboardTempDir() error {
 	}
 	m.clipboardTempDir = dir
 	return nil
-}
-
-// renderAttachmentChips returns a line of chips for the input area showing
-// both file and image attachments. Returns an empty string when there are none.
-func (m Model) renderAttachmentChips(mc color.Color) string {
-	if len(m.attachments) == 0 {
-		return ""
-	}
-	var chips []string
-	for i, att := range m.attachments {
-		var label string
-		if att.Kind == "image" {
-			label = fmt.Sprintf("▣ %s [%d]", att.RelPath, i+1)
-		} else {
-			label = fmt.Sprintf("▤ %s [%d]", filepath.Base(att.RelPath), i+1)
-		}
-		chip := lipgloss.NewStyle().
-			Foreground(mc).
-			Background(theme.Current().BgCodeInline).
-			PaddingLeft(1).PaddingRight(1).
-			Render(label)
-		chips = append(chips, chip)
-	}
-	hint := styleMuted.Render("  ctrl+r removes last")
-	return strings.Join(chips, " ") + hint
 }

@@ -77,24 +77,26 @@ type bannerCache struct {
 // (updateToolStreamMessage, attachToolDiff): a snapshot sharing the backing
 // array would change along with the message and never see the difference.
 type messageSnapshot struct {
-	role     Role
-	kind     string
-	content  string
-	thinking string
-	meta     string
-	tools    []ToolItem
-	images   []string
+	role        Role
+	kind        string
+	content     string
+	thinking    string
+	meta        string
+	tools       []ToolItem
+	images      []string
+	attachments []attachmentItem
 }
 
 func snapshotOf(msg *ChatMessage) messageSnapshot {
 	return messageSnapshot{
-		role:     msg.Role,
-		kind:     msg.Kind,
-		content:  msg.Content,
-		thinking: msg.Thinking,
-		meta:     msg.Meta,
-		tools:    append([]ToolItem(nil), msg.Tools...),
-		images:   append([]string(nil), msg.Images...),
+		role:        msg.Role,
+		kind:        msg.Kind,
+		content:     msg.Content,
+		thinking:    msg.Thinking,
+		meta:        msg.Meta,
+		tools:       append([]ToolItem(nil), msg.Tools...),
+		images:      append([]string(nil), msg.Images...),
+		attachments: append([]attachmentItem(nil), msg.Attachments...),
 	}
 }
 
@@ -102,8 +104,14 @@ func snapshotOf(msg *ChatMessage) messageSnapshot {
 func (s *messageSnapshot) matches(msg *ChatMessage) bool {
 	if s.role != msg.Role || s.kind != msg.Kind || s.content != msg.Content ||
 		s.thinking != msg.Thinking || s.meta != msg.Meta ||
-		len(s.tools) != len(msg.Tools) || len(s.images) != len(msg.Images) {
+		len(s.tools) != len(msg.Tools) || len(s.images) != len(msg.Images) ||
+		len(s.attachments) != len(msg.Attachments) {
 		return false
+	}
+	for i := range s.attachments {
+		if s.attachments[i] != msg.Attachments[i] {
+			return false
+		}
 	}
 	for i := range s.tools {
 		if s.tools[i] != msg.Tools[i] {

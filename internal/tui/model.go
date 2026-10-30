@@ -3,6 +3,7 @@ package tui
 import (
 	"context"
 	"image/color"
+	"slices"
 	"strings"
 	"time"
 
@@ -77,7 +78,11 @@ type ChatMessage struct {
 	Kind     string
 	Tools    []ToolItem
 	Images   []string
-	At       time.Time
+	// Attachments are the files a user message was sent with, shown under
+	// it by name (the images among them also sit in Images, which the model
+	// receives; the documents' text went into the prompt).
+	Attachments []attachmentItem
+	At          time.Time
 
 	// id identifies the message to the render cache; zero until its first
 	// render (see renderTranscriptBlocks), then kept for its lifetime.
@@ -276,6 +281,7 @@ type queuedPrompt struct {
 	Prompt         string
 	MentionedFiles []string
 	Images         []string
+	Attachments    []attachmentItem
 }
 
 // goalState tracks an in-flight /goal run across the outer orchestration loop.
@@ -666,6 +672,17 @@ type Model struct {
 	clipboardTempDir string // temp dir for pasted images, created on first paste
 	clipboardCounter int    // increments each paste for [Image #N] labelling
 
+	// spell is the input box's spell check (spellcheck.go).
+	spell spellState
+
+	// chipHover is the attachment chip under the mouse and chipPreview the
+	// one whose content is open full screen, each as index+1 so the zero
+	// value means none; chipPreviewScroll is the preview's first row
+	// (attachment_chips.go).
+	chipHover         int
+	chipPreview       int
+	chipPreviewScroll int
+
 	// Notifications (OSC 9 / BEL / desktop)
 	agentStartAt time.Time
 	// workingVerb is the status word the working indicator shows for the
@@ -955,4 +972,19 @@ func shapeInput(ta *textarea.Model) {
 	ta.MinHeight = 1
 	ta.MaxHeight = 1
 	ta.MaxContentHeight = inputMaxContentRows
+	// Enter submits (the key handlers above the textarea own it), so the
+	// textarea itself only breaks a line on the newline keys.
+	ta.KeyMap.InsertNewline.SetKeys(newlineKeys...)
 }
+
+// newlineKeys start a new line in a multi-line input instead of submitting
+// it. shift+enter needs a terminal that reports modified keys (kitty
+// keyboard protocol: Ghostty, kitty, WezTerm, iTerm2 with "report keys" on,
+// Windows Terminal; or xterm's modifyOtherKeys). alt+enter (option+return,
+// or esc then enter) and ctrl+j work in every terminal, and a terminal set up
+// to send "\n" for shift+enter (VS Code's and many users' Terminal.app
+// setup) arrives as ctrl+j.
+var newlineKeys = []string{"shift+enter", "alt+enter", "ctrl+j"}
+
+// isNewlineKey reports whether key is one of newlineKeys.
+func isNewlineKey(key string) bool { return slices.Contains(newlineKeys, key) }

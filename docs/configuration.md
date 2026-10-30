@@ -125,6 +125,7 @@ light palette re-tunes.
 | --- | --- | --- |
 | `theme` | `""` (treated as `auto`) | `dark`, `light` or `auto`. Written by `/theme`; an unrecognised value is cleared to the default on load. |
 | `cursor_blink` | `false` | Set `true` to make the input cursor blink. A blinking cursor repaints the screen twice a second while the TUI is open; the steady default leaves an idle TUI asleep. |
+| `spell_check_disabled` | `false` | Set `true` to stop underlining misspelled words in the input box. The check uses the system's spell checker (macOS's own, or `aspell`/`hunspell` on Linux) after you pause typing, and skips code: words in backticks, paths, `@mentions`, `/commands`, `camelCase`, words with digits or underscores. Where no checker exists nothing is marked. |
 
 Precedence at startup is `SPETTRO_THEME` (environment, never persisted) >
 `theme` in `config.json` > auto-detection > dark. `auto` seeds from `COLORFGBG`

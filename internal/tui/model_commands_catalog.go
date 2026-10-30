@@ -428,6 +428,7 @@ const helpText = `commands:
   /storage       report what bulb stores on disk (add "clean" to reclaim)
 
 keys:
+  shift+enter    new line in the message (alt+enter or ctrl+j in any terminal)
   esc esc        open the rewind picker (when idle)
   shift+tab      cycle mode (plan → coding → ask)
   f2             cycle to next favorite model
@@ -435,6 +436,8 @@ keys:
   ctrl+y         copy last assistant response to clipboard
   ctrl+f         attach a file to the next message
   ctrl+r         remove last file attachment
+  drop files     drag files onto the terminal to attach them; hover a chip
+                 for its path, click it to preview
   ctrl+b         toggle side activity panel
   ctrl+o         toggle tool details in the transcript (in an approval: the preview)
   ctrl+g         toggle full, untrimmed tool outputs

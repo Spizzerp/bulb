@@ -45,6 +45,10 @@ type UserConfig struct {
 	// cursor repaints the frame twice a second for as long as the TUI is
 	// open, which was most of an idle TUI's CPU once nothing else woke it.
 	CursorBlink bool `json:"cursor_blink,omitempty"`
+	// SpellCheckDisabled turns off the red underline under misspelled words
+	// in the input box. On by default (the zero value); it uses the system's
+	// spell checker and does nothing where there is none.
+	SpellCheckDisabled bool `json:"spell_check_disabled,omitempty"`
 	// ThinkingLevel selects reasoning compute when the active model supports
 	// it. Allowed values are "off", "low", "medium", "high", "x-high", "max",
 	// or empty (never set: no thinking parameter is sent and the provider's
