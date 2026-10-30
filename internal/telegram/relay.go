@@ -397,7 +397,7 @@ func (r *Relay) processUpdate(ctx context.Context, u Update) {
 			"chat_id":  chatID,
 			"username": username,
 		})
-		r.sendRaw(ctx, chatID, "⊘ This chat is not allowed to drive Spettro. Ask the operator to run `/telegram allow @"+username+"` (or `/telegram allow "+itoa(chatID)+"`) in the TUI.")
+		r.sendRaw(ctx, chatID, "⊘ This chat is not allowed to drive Bulb. Ask the operator to run `/telegram allow @"+username+"` (or `/telegram allow "+itoa(chatID)+"`) in the TUI.")
 		return
 	}
 
@@ -456,7 +456,7 @@ func (r *Relay) processUpdate(ctx context.Context, u Update) {
 	case <-ctx.Done():
 		return
 	case <-time.After(30 * time.Second):
-		r.sendRaw(ctx, chatID, "(submitted — Spettro did not ack within 30s, still running)")
+		r.sendRaw(ctx, chatID, "(submitted — Bulb did not ack within 30s, still running)")
 	}
 }
 
@@ -517,7 +517,7 @@ func (r *Relay) helpText() string {
 		bot = "your bot"
 	}
 	return strings.Join([]string{
-		"Spettro Telegram relay",
+		"Bulb Telegram relay",
 		"",
 		"Send any message and it becomes a prompt for the active agent.",
 		"Send a /-command (like /plan) and it runs as a slash command.",
@@ -527,7 +527,7 @@ func (r *Relay) helpText() string {
 		"  /whoami — show bot identity",
 		"  /help — this message",
 		"",
-		"When Spettro asks a question, just reply with plain text.",
+		"When Bulb asks a question, just reply with plain text.",
 	}, "\n")
 }
 

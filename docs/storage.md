@@ -1,13 +1,13 @@
 # Storage report and cleanup
 
-Spettro accumulates data under `~/.spettro` (global) and `<project>/.spettro`
+Bulb accumulates data under `~/.spettro` (global) and `<project>/.spettro`
 (per project): checkpoint shadow repos, saved sessions, caches. `/storage`
-shows what is on disk and `/storage clean` (TUI) or `spettro clean` (CLI)
+shows what is on disk and `/storage clean` (TUI) or `bulb clean` (CLI)
 reclaims it safely. Cleanup is always user-invoked and previewed — there is no
 automatic background deletion (automatic per-project checkpoint retention is
 separate; see [Checkpointing](checkpointing.md)).
 
-## What Spettro writes (inventory)
+## What Bulb writes (inventory)
 
 Every artifact class is declared in a single registry (`internal/storage`)
 with a class, sizer, and — only for reclaimable classes — a path-validated
@@ -49,15 +49,15 @@ deleted.
   opt-in. If the current project's own checkpoint store is deleted, the live
   Checkpointer re-initializes lazily on the next snapshot.
 
-## `spettro clean` (CLI)
+## `bulb clean` (CLI)
 
 Works without the TUI. Dry-run by default:
 
 ```sh
-spettro clean            # print the report and the safe-default plan; delete nothing
-spettro clean --yes      # execute the safe-default plan
-spettro clean --days 60  # override the session age threshold
-spettro clean --keep 10  # override sessions kept per project
+bulb clean            # print the report and the safe-default plan; delete nothing
+bulb clean --yes      # execute the safe-default plan
+bulb clean --days 60  # override the session age threshold
+bulb clean --keep 10  # override sessions kept per project
 ```
 
 ## Orphan detection

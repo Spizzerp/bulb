@@ -48,13 +48,13 @@ func PrintGoodbye(final tea.Model) {
 	// terminal, so it has to read the resolved palette the same way the TUI
 	// did rather than assume a dark ground.
 	p := theme.Current()
-	eyeStyle := lipgloss.NewStyle().Foreground(p.AccentPurple)
+	logoStyle := lipgloss.NewStyle().Foreground(p.AccentPurple)
 	mutedStyle := lipgloss.NewStyle().Foreground(p.TextMuted)
 	accentStyle := lipgloss.NewStyle().Foreground(p.AccentPurple)
 
 	fmt.Println()
-	for _, line := range eyesNormal {
-		fmt.Println(eyeStyle.Render(line))
+	for _, line := range wordmarkArt {
+		fmt.Println(logoStyle.Render(line))
 	}
 	fmt.Println()
 

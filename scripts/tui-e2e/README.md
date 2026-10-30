@@ -11,7 +11,7 @@ pip install pyte            # a terminal emulator in Python; or use a virtualenv
 scripts/tui-e2e/run.sh      # prints one summary line per size and the output directory
 ```
 
-`run.sh` builds `spettro`, then for 40x15, 80x24, 120x40 and 200x50 runs
+`run.sh` builds `bulb`, then for 40x15, 80x24, 120x40 and 200x50 runs
 `drive.py`, which:
 
 - starts `fake_openai.py`, an OpenAI-compatible server on localhost that

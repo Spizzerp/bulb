@@ -1,15 +1,15 @@
 # Themes (dark, light, auto)
 
-Spettro's TUI was drawn for a dark terminal. On a light-background terminal the
+Bulb's TUI was drawn for a dark terminal. On a light-background terminal the
 same palette prints pale grey text on white and paints black slabs behind code
 blocks, which is unreadable rather than merely ugly. The **theme** setting fixes
-that: pick a palette, or let Spettro detect one.
+that: pick a palette, or let Bulb detect one.
 
 Three selections ship, and no more:
 
 | Selection | Meaning |
 | --- | --- |
-| `dark` | The palette Spettro has always rendered, unchanged. |
+| `dark` | The palette Bulb has always rendered, unchanged. |
 | `light` | A re-tuned palette for a light terminal: dark ink, pale surfaces. |
 | `auto` | Detect the terminal's background and resolve to `dark` or `light`. **Default.** |
 
@@ -64,7 +64,7 @@ Highest wins:
    background, and for scripted runs that want a predictable palette:
 
    ```bash
-   SPETTRO_THEME=light spettro
+   SPETTRO_THEME=light bulb
    ```
 
    It is a startup override, not a lock. `/theme` still repaints and still
@@ -91,7 +91,7 @@ Highest wins:
 
 Detection runs in two stages, because the accurate answer is also the slow one.
 
-**At startup**, before the first frame, Spettro reads `COLORFGBG` — a pure
+**At startup**, before the first frame, Bulb reads `COLORFGBG` — a pure
 environment read, no I/O — so the first paint is usually already right.
 rxvt, urxvt and Konsole set it to `fg;bg` (some rxvt builds to
 `fg;default;bg`); background indices 0-6 and 8 are dark, 7 and 9-15 light.
@@ -99,11 +99,11 @@ It is only a hint: the variable is inherited by child processes, so it goes
 stale across a `tmux attach` from a different terminal, or a theme switch inside
 the same session.
 
-**Then** Spettro asks the terminal itself, with an OSC 11 background query, and
+**Then** Bulb asks the terminal itself, with an OSC 11 background query, and
 revises the palette when the answer arrives. Most modern terminals answer;
 those that do not simply cost a wasted round trip. The reply is classified by
 HSL lightness below 50%, matching Bubble Tea and Lip Gloss exactly, so a colour
-Spettro calls dark and a colour the libraries call dark can never disagree.
+Bulb calls dark and a colour the libraries call dark can never disagree.
 
 The query is skipped entirely unless stdin *and* stdout are both character
 devices and `TERM` is set to something other than `dumb`. Bubble Tea writes

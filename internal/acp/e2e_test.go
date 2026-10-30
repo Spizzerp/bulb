@@ -682,7 +682,7 @@ func TestACPEndToEnd_SharedSettingsReachOtherSessions(t *testing.T) {
 		t.Fatalf("session B got %d config updates, want 1", len(updates)-before)
 	}
 	opts := jsonString(updates[len(updates)-1]["configOptions"])
-	if !strings.Contains(opts, `"currentValue":"yolo","description":"How Spettro requests approval for actions","id":"permission"`) {
+	if !strings.Contains(opts, `"currentValue":"yolo","description":"How Bulb requests approval for actions","id":"permission"`) {
 		t.Errorf("B's permission selector not updated: %s", opts)
 	}
 	if !strings.Contains(opts, `"currentValue":"ask"`) {

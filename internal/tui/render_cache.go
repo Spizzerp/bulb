@@ -69,7 +69,6 @@ type renderEntry struct {
 type bannerCache struct {
 	mode  string
 	width int
-	frame int
 	lines []string
 }
 
@@ -203,7 +202,7 @@ func (m *Model) renderTranscript(budget time.Duration) [][]string {
 
 	// The logo opens the scrollback rather than sitting above it, so it
 	// scrolls out of the way as the conversation grows.
-	banner := c.bannerLines(m.mode, m.transcriptWidth(), m.eyeIntroFrame)
+	banner := c.bannerLines(m.mode, m.transcriptWidth())
 	if len(m.messages) == 0 {
 		return [][]string{banner, {styleMuted.Render(emptyTranscriptHint)}}
 	}
@@ -320,10 +319,10 @@ func (c *renderCacheState) evictStale(messages []ChatMessage) {
 	c.entries = live
 }
 
-// bannerLines returns the logo block for this mode, width, and intro frame.
-func (c *renderCacheState) bannerLines(mode string, width, frame int) []string {
-	if c.banner.lines == nil || c.banner.mode != mode || c.banner.width != width || c.banner.frame != frame {
-		c.banner = bannerCache{mode: mode, width: width, frame: frame, lines: strings.Split(renderEyesAt(mode, width, frame), "\n")}
+// bannerLines returns the logo block for this mode and width.
+func (c *renderCacheState) bannerLines(mode string, width int) []string {
+	if c.banner.lines == nil || c.banner.mode != mode || c.banner.width != width {
+		c.banner = bannerCache{mode: mode, width: width, lines: strings.Split(renderWordmark(mode, width), "\n")}
 	}
 	return c.banner.lines
 }

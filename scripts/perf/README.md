@@ -1,6 +1,6 @@
 # Performance drivers
 
-Small, dependency-free Python 3 drivers for comparing two Spettro builds on
+Small, dependency-free Python 3 drivers for comparing two Bulb builds on
 the same machine. [docs/performance.md](../../docs/performance.md) explains
 the method and lists every measured result; this file only covers how to run
 the drivers.
@@ -16,15 +16,15 @@ Build both with the release flags, one from the commit you compare against
 and one from your branch:
 
 ```sh
-git worktree add /tmp/spettro-base <base-commit>
-(cd /tmp/spettro-base && GOWORK=off go build -trimpath -ldflags='-s -w' -o /tmp/spettro-base.bin ./cmd/spettro)
-GOWORK=off go build -trimpath -ldflags='-s -w' -o /tmp/spettro-now.bin ./cmd/spettro
+git worktree add /tmp/bulb-base <base-commit>
+(cd /tmp/bulb-base && GOWORK=off go build -trimpath -ldflags='-s -w' -o /tmp/bulb-base.bin ./cmd/bulb)
+GOWORK=off go build -trimpath -ldflags='-s -w' -o /tmp/bulb-now.bin ./cmd/bulb
 ```
 
 ## `procab.py`: process start, `--help`, `--version`
 
 ```sh
-scripts/perf/procab.py --n 30 base='/tmp/spettro-base.bin --help' now='/tmp/spettro-now.bin --help'
+scripts/perf/procab.py --n 30 base='/tmp/bulb-base.bin --help' now='/tmp/bulb-now.bin --help'
 ```
 
 Prints min / median / p95 wall time, the median peak RSS of five extra runs
@@ -34,7 +34,7 @@ under `/usr/bin/time`, the exit codes seen, and the load average.
 
 ```sh
 scripts/perf/firstframe.py --cwd ~/code/some-repo --home-template /tmp/keyed-home \
-    base=/tmp/spettro-base.bin now=/tmp/spettro-now.bin
+    base=/tmp/bulb-base.bin now=/tmp/bulb-now.bin
 ```
 
 Times fork-to-first-complete-frame in a 120x40 pseudo-terminal. The frame
@@ -42,7 +42,7 @@ counts as complete when its text matches `--marker` (default `ask-first`,
 the permission mode shown in the status bar once the frame is fully laid
 out). Each binary gets its own copy of `--home-template`, reused by all
 its runs so one-time migrations happen during the warm-ups; to make a keyed one,
-run Spettro once with `HOME=/tmp/keyed-home`, enter a dummy key for an
+run Bulb once with `HOME=/tmp/keyed-home`, enter a dummy key for an
 OpenAI-compatible endpoint, and quit. Never pass your real home.
 
 ## Rules for a result you publish

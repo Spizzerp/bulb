@@ -356,30 +356,29 @@ func (m Model) updateTrust(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 		switch m.trustCursor {
 		case 0:
 			m.showTrust = false
-			m.pushSystemMsg("spettro ready — /help for commands, shift+tab to switch mode")
+			m.pushSystemMsg("bulb ready — /help for commands, shift+tab to switch mode")
 			m.refreshViewport()
 		case 1:
 			_ = config.AddTrusted(m.cwd)
 			m.showTrust = false
-			m.pushSystemMsg("spettro ready — /help for commands, shift+tab to switch mode")
+			m.pushSystemMsg("bulb ready — /help for commands, shift+tab to switch mode")
 			m.refreshViewport()
 		case 2:
 			return m, tea.Quit
 		}
 	case "1", "y", "Y":
 		m.showTrust = false
-		m.pushSystemMsg("spettro ready — /help for commands, shift+tab to switch mode")
+		m.pushSystemMsg("bulb ready — /help for commands, shift+tab to switch mode")
 		m.refreshViewport()
 	case "2":
 		_ = config.AddTrusted(m.cwd)
 		m.showTrust = false
-		m.pushSystemMsg("spettro ready — /help for commands, shift+tab to switch mode")
+		m.pushSystemMsg("bulb ready — /help for commands, shift+tab to switch mode")
 		m.refreshViewport()
 	case "3", "n", "N", "esc", "ctrl+c":
 		return m, tea.Quit
 	}
 	if !m.showTrust {
-		m.startEyesIntroIfVisible()
 		return m, m.armTimers()
 	}
 	return m, nil
@@ -439,7 +438,7 @@ func (m Model) viewTrust() string {
 	sections := [][]string{
 		{title},
 		indented(termtext.EscapeControls(m.cwd), pathStyle),
-		append(indented("Spettro may read files and run commands in this folder.", warnStyle),
+		append(indented("Bulb may read files and run commands in this folder.", warnStyle),
 			indented("Only trust folders you own and control.", styleMuted)...),
 		optLines,
 		indented("↑↓ navigate  enter confirm  1/2/3 direct select", styleMuted),

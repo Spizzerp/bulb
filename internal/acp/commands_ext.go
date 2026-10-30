@@ -106,7 +106,7 @@ func handleExtendedSlashCommand(b *bridge, s *acpSession, cfg *config.UserConfig
 		return acpPermissionsText(s, cfg, fields), false, true
 
 	case "/init":
-		return "over ACP /init runs as a normal agent turn: just ask \"analyze this codebase and write SPETTRO.md\" — or run `spettro` in a terminal and use /init there", false, true
+		return "over ACP /init runs as a normal agent turn: just ask \"analyze this codebase and write SPETTRO.md\" — or run `bulb` in a terminal and use /init there", false, true
 
 	case "/approve":
 		// Plan approval is implicit over ACP: sending the plan as a prompt in

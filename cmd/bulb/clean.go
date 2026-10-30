@@ -11,7 +11,7 @@ import (
 	"spettro/internal/storage"
 )
 
-// runClean implements `spettro clean`: report what Spettro stores on disk and
+// runClean implements `bulb clean`: report what Bulb stores on disk and
 // reclaim the safe-default set. Dry-run by default — without --yes it only
 // prints the plan.
 func runClean(args []string) {
@@ -20,7 +20,7 @@ func runClean(args []string) {
 	days := fs.Int("days", 0, "session age threshold in days (default 30, or clean_session_age_days from config)")
 	keep := fs.Int("keep", 0, "most recent sessions to keep per project regardless of age (default 5, or clean_keep_sessions)")
 	fs.Usage = func() {
-		fmt.Fprintln(os.Stderr, "usage: spettro clean [--yes] [--days N] [--keep N]")
+		fmt.Fprintln(os.Stderr, "usage: bulb clean [--yes] [--days N] [--keep N]")
 		fs.PrintDefaults()
 	}
 	_ = fs.Parse(args)

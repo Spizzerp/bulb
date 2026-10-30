@@ -1,5 +1,5 @@
 #!/bin/sh
-# End-to-end rendering check of the TUI: builds spettro, then drives it in a
+# End-to-end rendering check of the TUI: builds bulb, then drives it in a
 # pseudo-terminal at several sizes against a fake OpenAI-compatible server
 # (no API key, no network). See README.md in this directory.
 #
@@ -21,14 +21,14 @@ if ! "$python" -c 'import pyte' 2>/dev/null; then
 fi
 
 mkdir -p "$out"
-(cd "$repo" && go build -o "$out/spettro" ./cmd/spettro)
+(cd "$repo" && go build -o "$out/bulb" ./cmd/bulb)
 
 status=0
 for size in 40x15 80x24 120x40 200x50; do
 	w=${size%x*}
 	h=${size#*x}
 	rm -rf "${out:?}/$size"
-	"$python" "$here/drive.py" "$out/spettro" "$out/$size" "$w" "$h" || status=1
+	"$python" "$here/drive.py" "$out/bulb" "$out/$size" "$w" "$h" || status=1
 done
 echo "snapshots: $out"
 exit $status

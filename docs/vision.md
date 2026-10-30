@@ -1,6 +1,6 @@
 # Vision: view-image and agent-driven screenshots
 
-Spettro lets the agent *see* images mid-run. The single primitive is the
+Bulb lets the agent *see* images mid-run. The single primitive is the
 `view-image` tool: it attaches an image file from the workspace to the
 conversation as real vision input, so the model looks at the pixels instead of
 reading a path.

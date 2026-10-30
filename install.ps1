@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Installs spettro on Windows.
+    Installs bulb on Windows.
 
 .DESCRIPTION
     Downloads the release archive matching this machine's architecture, verifies
@@ -13,7 +13,7 @@
     Release tag to install, e.g. v1.2.3. Defaults to the latest release.
 
 .PARAMETER InstallDir
-    Destination directory. Defaults to %LOCALAPPDATA%\Programs\spettro.
+    Destination directory. Defaults to %LOCALAPPDATA%\Programs\bulb.
 
 .PARAMETER NoPathUpdate
     Leave the user PATH untouched. By default InstallDir is added to it when
@@ -28,7 +28,7 @@
     irm https://raw.githubusercontent.com/aploide/spettro/main/install.ps1 | iex
 
 .EXAMPLE
-    .\install.ps1 -Version v1.2.3 -InstallDir C:\tools\spettro -NoPathUpdate
+    .\install.ps1 -Version v1.2.3 -InstallDir C:\tools\bulb -NoPathUpdate
 #>
 [CmdletBinding()]
 param(
@@ -69,7 +69,7 @@ switch ($rawArch.ToUpperInvariant()) {
     'AMD64' { $arch = 'amd64' }
     'ARM64' { $arch = 'arm64' }
     default {
-        throw "Unsupported architecture: $rawArch. spettro ships windows/amd64 and windows/arm64 builds."
+        throw "Unsupported architecture: $rawArch. bulb ships windows/amd64 and windows/arm64 builds."
     }
 }
 
@@ -78,7 +78,7 @@ if ([string]::IsNullOrWhiteSpace($Version)) {
     Write-Step 'Fetching latest release...'
     try {
         $release = Invoke-RestMethod -Uri "https://api.github.com/repos/$Repo/releases/latest" `
-            -Headers @{ 'User-Agent' = 'spettro-installer'; 'Accept' = 'application/vnd.github+json' }
+            -Headers @{ 'User-Agent' = 'bulb-installer'; 'Accept' = 'application/vnd.github+json' }
         $Version = $release.tag_name
     } catch {
         throw "Could not determine the latest release: $($_.Exception.Message)`nPass one explicitly: .\install.ps1 -Version v1.0.0"
@@ -89,10 +89,10 @@ if ([string]::IsNullOrWhiteSpace($Version)) {
 }
 
 if ([string]::IsNullOrWhiteSpace($InstallDir)) {
-    $InstallDir = Join-Path $env:LOCALAPPDATA 'Programs\spettro'
+    $InstallDir = Join-Path $env:LOCALAPPDATA 'Programs\bulb'
 }
 
-Write-Step "Installing spettro $Version (windows/$arch)"
+Write-Step "Installing bulb $Version (windows/$arch)"
 
 # ── download ─────────────────────────────────────────────────────────────────
 if ([string]::IsNullOrWhiteSpace($BaseUrl)) {
@@ -100,11 +100,11 @@ if ([string]::IsNullOrWhiteSpace($BaseUrl)) {
 }
 $BaseUrl = $BaseUrl.TrimEnd('/')
 
-$archiveName = "spettro_${Version}_windows_${arch}.zip"
+$archiveName = "bulb_${Version}_windows_${arch}.zip"
 $archiveUrl  = "$BaseUrl/$archiveName"
 $sumsUrl     = "$BaseUrl/checksums.txt"
 
-$tmp = Join-Path ([IO.Path]::GetTempPath()) ("spettro-install-" + [Guid]::NewGuid().ToString('N'))
+$tmp = Join-Path ([IO.Path]::GetTempPath()) ("bulb-install-" + [Guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $tmp -Force | Out-Null
 
 try {
@@ -117,7 +117,7 @@ try {
         # absent or unconfigured, which is the norm on Server and on fresh
         # accounts; without it PowerShell 5.1 throws before the download starts.
         Invoke-WebRequest -Uri $archiveUrl -OutFile $archivePath -UseBasicParsing `
-            -Headers @{ 'User-Agent' = 'spettro-installer' }
+            -Headers @{ 'User-Agent' = 'bulb-installer' }
     } catch {
         throw "Download failed: $($_.Exception.Message)`nCheck that $Version exists at https://github.com/$Repo/releases"
     }
@@ -126,7 +126,7 @@ try {
     Write-Step 'Downloading checksums...'
     try {
         Invoke-WebRequest -Uri $sumsUrl -OutFile $sumsPath -UseBasicParsing `
-            -Headers @{ 'User-Agent' = 'spettro-installer' }
+            -Headers @{ 'User-Agent' = 'bulb-installer' }
     } catch {
         throw "Could not download checksums.txt for $Version. Refusing to install without integrity verification."
     }
@@ -156,26 +156,26 @@ try {
     New-Item -ItemType Directory -Path $extractDir -Force | Out-Null
     Expand-Archive -LiteralPath $archivePath -DestinationPath $extractDir -Force
 
-    $binary = Get-ChildItem -LiteralPath $extractDir -Filter 'spettro.exe' -Recurse -File |
+    $binary = Get-ChildItem -LiteralPath $extractDir -Filter 'bulb.exe' -Recurse -File |
         Select-Object -First 1
     if ($null -eq $binary) {
-        throw "The release archive does not contain spettro.exe."
+        throw "The release archive does not contain bulb.exe."
     }
 
     # ── install ──────────────────────────────────────────────────────────────
     New-Item -ItemType Directory -Path $InstallDir -Force | Out-Null
-    $dest = Join-Path $InstallDir 'spettro.exe'
+    $dest = Join-Path $InstallDir 'bulb.exe'
 
     # Windows refuses to overwrite the image of a running process but does allow
     # renaming it, which is also how the in-place self-update works. Move any
-    # current build aside so re-running this over a live spettro still succeeds.
+    # current build aside so re-running this over a live bulb still succeeds.
     if (Test-Path -LiteralPath $dest) {
         $backup = "$dest.old"
         Remove-Item -LiteralPath $backup -Force -ErrorAction SilentlyContinue
         try {
             Rename-Item -LiteralPath $dest -NewName (Split-Path -Leaf $backup) -Force
         } catch {
-            throw "Could not replace $dest : $($_.Exception.Message)`nClose any running spettro and try again."
+            throw "Could not replace $dest : $($_.Exception.Message)`nClose any running bulb and try again."
         }
     }
 
@@ -206,10 +206,10 @@ try {
 
     # ── report ───────────────────────────────────────────────────────────────
     Write-Host ''
-    Write-Host "spettro $Version installed to $dest"
+    Write-Host "bulb $Version installed to $dest"
 
     if ($onPath) {
-        Write-Host "Run 'spettro' to get started."
+        Write-Host "Run 'bulb' to get started."
     } else {
         Write-Host ''
         Write-Host "$InstallDir is not on your PATH. Add it with:"

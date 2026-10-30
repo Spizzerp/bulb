@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Drive the real Spettro TUI in a pseudo-terminal against fake_openai.py.
+"""Drive the real Bulb TUI in a pseudo-terminal against fake_openai.py.
 
 The binary runs in a pty of the requested size with an isolated HOME (under
 OUTDIR), talking to the fake server, in ask-first mode so every approval
@@ -184,7 +184,7 @@ def layout_problems(text, height):
     """Structural checks every main-screen frame that fits the terminal passes."""
     rows = text.split("\n")
     problems = []
-    if not rows[0].startswith("◈ spettro"):
+    if not rows[0].startswith("✿ bulb"):
         problems.append(f"row 0 is not the header: {rows[0]!r}")
     if "ctx" not in rows[-1]:
         problems.append(f"last row is not the status bar: {rows[-1]!r}")

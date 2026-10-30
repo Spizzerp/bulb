@@ -44,10 +44,6 @@ func ShellApprovalOptionsForTesting() []string {
 	return append([]string(nil), shellApprovalOptions...)
 }
 
-func IsPlanningEyeModeForTesting(mode string) bool {
-	return isPlanningEyeMode(mode)
-}
-
 func NewModelForTesting() Model {
 	ta := textarea.New()
 	ta.Focus()

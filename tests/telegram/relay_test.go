@@ -176,7 +176,7 @@ func TestRelay_BotCommand_Help(t *testing.T) {
 	if len(sent) == 0 {
 		t.Fatal("expected a help reply")
 	}
-	if !strings.Contains(sent[0].Text, "Spettro Telegram relay") {
+	if !strings.Contains(sent[0].Text, "Bulb Telegram relay") {
 		t.Fatalf("unexpected help text: %q", sent[0].Text)
 	}
 	select {

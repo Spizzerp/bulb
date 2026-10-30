@@ -2,16 +2,16 @@
 
 This guide focuses on the daily usage flow. For command details, see [`commands.md`](commands.md).
 
-## 1) Launch Spettro
+## 1) Launch Bulb
 
 ```bash
-./bin/spettro
+./bin/bulb
 ```
 
-`spettro --version` (also `-v` or `spettro version`) prints the version and
+`bulb --version` (also `-v` or `bulb version`) prints the version and
 exits.
 
-On first launch in a folder, Spettro shows a trust dialog:
+On first launch in a folder, Bulb shows a trust dialog:
 
 - `Yes, trust this session`
 - `Yes, and remember this folder`
@@ -24,7 +24,7 @@ Use:
 - `/connect` to add provider API key or a local endpoint
 - `/models` to select provider/model
 
-Spettro supports:
+Bulb supports:
 
 - Native Anthropic API.
 - OpenAI-compatible providers through provider-specific base URLs.
@@ -34,7 +34,7 @@ Model metadata is loaded from `https://models.dev/api.json` and cached locally.
 
 ## 3) Work with the agent system
 
-Spettro starts with `default_agent` from manifest (default: `plan`).
+Bulb starts with `default_agent` from manifest (default: `plan`).
 
 - Explore first with `glob`/`grep`/`file-read`.
 - Spawn sub-agents in parallel via the native `agent` tool (multiple calls in one response run concurrently).
@@ -56,4 +56,4 @@ If permission is `ask-first`:
 
 ## 6) Customize
 
-Edit `spettro.agents.toml` and `agents/*.md` (for example `agents/docs-writer.md`), then restart Spettro.
+Edit `spettro.agents.toml` and `agents/*.md` (for example `agents/docs-writer.md`), then restart Bulb.

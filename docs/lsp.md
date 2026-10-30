@@ -1,11 +1,11 @@
 # Language Server (LSP) Integration
 
-Spettro uses Language Server Protocol servers to give the agent real
+Bulb uses Language Server Protocol servers to give the agent real
 diagnostics after every file edit and precise symbol navigation
 (references / go-to-definition), instead of relying on grep alone.
 
 **It works with zero configuration.** On first use of a supported file type,
-Spettro looks for the matching language server and starts it automatically:
+Bulb looks for the matching language server and starts it automatically:
 first on your `PATH`, then in the places toolchains install servers without
 putting them on `PATH` — the project's `node_modules/.bin`, `$GOBIN`,
 `$GOPATH/bin`, `~/go/bin`, `~/.local/bin` and `~/.cargo/bin`. If a server is
@@ -107,7 +107,7 @@ request that needs it starts a fresh one.
 ## Optional overrides: `.spettro/lsp.json`
 
 You no longer need this file — it exists only to override the defaults.
-Spettro reads `~/.spettro/lsp.json` (user-global) and then the project's
+Bulb reads `~/.spettro/lsp.json` (user-global) and then the project's
 `.spettro/lsp.json`; the project file wins per server key, and both overlay
 the auto-detected defaults.
 

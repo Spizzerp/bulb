@@ -5,8 +5,8 @@
 | Command | Description |
 | --- | --- |
 | `/help` | Show in-app help text. |
-| `/exit`, `/quit` | Quit Spettro. |
-| `/update` | Install a newer Spettro release and restart into it. The startup notice may rest on a release check up to 24 hours old; `/update` always asks GitHub again, so a release published since then is found and installed. |
+| `/exit`, `/quit` | Quit Bulb. |
+| `/update` | Install a newer Bulb release and restart into it. The startup notice may rest on a release check up to 24 hours old; `/update` always asks GitHub again, so a release published since then is found and installed. |
 | `/mode`, `/next` | Cycle active manifest agent/mode. |
 | `/theme` | Open the [theme](theme.md) picker: pick dark, light or auto from a list with a live preview panel. Also reports the selection, the palette it resolved to, and which source decided (env / config / detection / default). |
 | `/theme <dark\|light\|auto>` | Switch palette immediately and persist it to `~/.spettro/config.json`. `auto` detects the terminal background and falls back to dark. `SPETTRO_THEME` picks the palette at startup; `/theme` still overrides it for the rest of the session. |
@@ -26,7 +26,7 @@
 | `/permissions [ask-first\|restricted\|yolo]` | Show or set policy alias. |
 | `/permissions debug <on\|off>` | Toggle permission diagnostics in UI. |
 | `/budget <n\|0>` | Set request token budget (`0` = unlimited). |
-| `/thinking <off\|low\|medium\|high\|x-high\|max>` | Set the reasoning/thinking level for the active model. Maps to Anthropic's thinking token budget and to `reasoning_effort` on OpenAI and OpenAI-compatible backends. Hidden for models the catalog does not flag as reasoning-capable; if a model rejects the chosen level, Spettro silently retries at a lower one. |
+| `/thinking <off\|low\|medium\|high\|x-high\|max>` | Set the reasoning/thinking level for the active model. Maps to Anthropic's thinking token budget and to `reasoning_effort` on OpenAI and OpenAI-compatible backends. Hidden for models the catalog does not flag as reasoning-capable; if a model rejects the chosen level, Bulb silently retries at a lower one. |
 | `/ultra [on\|off]` | Toggle [ultra](workflows.md#ultra-and-ultracode) (no argument flips it). Ultracode: substantive tasks run as dynamic workflows, as if every message contained the `ultracode` keyword. Saved to `~/.spettro/config.json` as `ultra`. The status bar shows `ultra` while it is on. It is suspended while the agent the message goes to would run under `ask-first` (status bar `ultra:suspended`, dimmed), since workflows need `restricted` or `yolo`; the setting stays saved. An agent's own permission counts: under the default user-level `ask-first`, `coding` (whose own level is `restricted`) still runs with ultra, while `plan` and `ask` are suspended. Writing `ultracode` in a message turns the mode on for that turn only. |
 | `/workflows` | List saved [workflow](workflows.md) scripts from `.spettro/workflows` and `~/.spettro/workflows`, with their descriptions and phases. |
 | `/workflows show <name>` | Print a saved workflow's header and source. |
@@ -60,8 +60,8 @@
 | `/resume` | Open saved conversation picker. |
 | `/rewind` | Restore files and/or conversation to a pre-edit checkpoint. See [Checkpointing](checkpointing.md). |
 | `/checkpoints` | Show checkpoint count and shadow-store disk usage (this project and all projects). |
-| `/storage` | Report what Spettro stores on disk, per artifact class. See [Storage](storage.md). |
-| `/storage clean` | Interactive multi-select cleanup with safe defaults preselected; also available headless as `spettro clean`. |
+| `/storage` | Report what Bulb stores on disk, per artifact class. See [Storage](storage.md). |
+| `/storage clean` | Interactive multi-select cleanup with safe defaults preselected; also available headless as `bulb clean`. |
 | `/init` | Analyze codebase and create/update `SPETTRO.md`. |
 | `/jobs [list]` | List background shell jobs started by the agent. |
 | `/jobs kill <id\|all>` | Terminate a background job (or all of them). |

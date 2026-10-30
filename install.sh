@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# install.sh — install spettro on macOS or Linux
+# install.sh — install bulb on macOS or Linux
 #
 # Usage:
 #   curl -sSfL https://raw.githubusercontent.com/aploide/spettro/main/install.sh | sh
@@ -19,7 +19,7 @@ case "$OS" in
   Linux)  OS="linux"  ;;
   *)
     echo "error: unsupported OS: $OS" >&2
-    echo "spettro supports macOS and Linux." >&2
+    echo "bulb supports macOS and Linux." >&2
     exit 1
     ;;
 esac
@@ -49,10 +49,10 @@ if [ -z "$VERSION" ]; then
   exit 1
 fi
 
-echo "Installing spettro ${VERSION} (${OS}/${ARCH})..."
+echo "Installing bulb ${VERSION} (${OS}/${ARCH})..."
 
 # ── download ─────────────────────────────────────────────────────────────────
-ARCHIVE_NAME="spettro_${VERSION}_${OS}_${ARCH}"
+ARCHIVE_NAME="bulb_${VERSION}_${OS}_${ARCH}"
 TARBALL="${ARCHIVE_NAME}.tar.gz"
 URL="https://github.com/${REPO}/releases/download/${VERSION}/${TARBALL}"
 
@@ -115,7 +115,7 @@ tar -xzf "${TMP}/${TARBALL}" -C "${TMP}"
 # are responsible for its permissions.
 mkdir -p "$INSTALL_DIR"
 
-DEST="${INSTALL_DIR}/spettro"
+DEST="${INSTALL_DIR}/bulb"
 
 if [ ! -w "$INSTALL_DIR" ]; then
   echo "error: ${INSTALL_DIR} is not writable." >&2
@@ -127,16 +127,16 @@ fi
 # leaves the kernel's cached code signature stale and the new binary is
 # SIGKILLed ("Code Signature Invalid") at launch.
 rm -f "$DEST"
-cp "${TMP}/spettro" "$DEST"
+cp "${TMP}/bulb" "$DEST"
 chmod +x "$DEST"
 
 # ── verify ────────────────────────────────────────────────────────────────────
 echo ""
-echo "spettro ${VERSION} installed to ${DEST}."
+echo "bulb ${VERSION} installed to ${DEST}."
 
 case ":${PATH}:" in
   *":${INSTALL_DIR}:"*)
-    echo "Run 'spettro' to get started."
+    echo "Run 'bulb' to get started."
     ;;
   *)
     echo ""

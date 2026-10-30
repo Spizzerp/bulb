@@ -52,7 +52,7 @@ holding `grep` by the v7 manifest migration). Manifest v12 folded it into
     mtime and size (and re-parsed, or added, when they changed) before the
     definitions are listed. Every file defining the name contains it, so
     unless the usages were cut at 200 matches the definitions are current
-    even for edits made outside Spettro a moment ago;
+    even for edits made outside Bulb a moment ago;
   - the files of the best 50 definitions are re-checked the same way, so a
     listed definition never points into a changed or deleted file;
   - the agent's own `file-write` / `file-edit` tools queue the touched file
@@ -61,7 +61,7 @@ holding `grep` by the v7 manifest migration). Manifest v12 folded it into
     background when the last one is more than 30 seconds old, or after a
     `bash` command (foreground or background job) or a checkpoint rewind.
   So a definition can be missing only from a file changed outside
-  Spettro that the usage grep did not reach (a name with more than 200
+  Bulb that the usage grep did not reach (a name with more than 200
   matches), until that background re-scan finishes.
 - **Bounded.** Indexing stops at 100k source files or 10 seconds (reading
   and parsing run in parallel), skips files over 1 MiB, and respects

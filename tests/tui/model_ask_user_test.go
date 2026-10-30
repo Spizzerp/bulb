@@ -1655,16 +1655,16 @@ func TestQuestionModal_RemoteEventCarriesTheWholeForm(t *testing.T) {
 // is showing rather than sending three unexplained prompts.
 func TestQuestionModal_TelegramHeadingNumbersTheForm(t *testing.T) {
 	one := tui.TelegramQuestionHeadingForTesting(map[string]any{"count": 1, "active": 0})
-	if one != "❓ Spettro is asking:" {
+	if one != "❓ Bulb is asking:" {
 		t.Fatalf("a single question needs no numbering: %q", one)
 	}
 	many := tui.TelegramQuestionHeadingForTesting(map[string]any{"count": 3, "active": 1})
-	if many != "❓ Spettro is asking (question 2 of 3):" {
+	if many != "❓ Bulb is asking (question 2 of 3):" {
 		t.Fatalf("heading = %q", many)
 	}
 	// A v1 event has neither field and must still read correctly.
 	legacy := tui.TelegramQuestionHeadingForTesting(map[string]any{})
-	if legacy != "❓ Spettro is asking:" {
+	if legacy != "❓ Bulb is asking:" {
 		t.Fatalf("legacy heading = %q", legacy)
 	}
 }

@@ -47,7 +47,7 @@ func main() {
 	)
 
 	// Subcommands run before flag parsing (the flag set below is for the
-	// TUI/headless modes). `spettro clean` works entirely without the TUI.
+	// TUI/headless modes). `bulb clean` works entirely without the TUI.
 	if len(os.Args) > 1 && os.Args[1] == "clean" {
 		runClean(os.Args[2:])
 		return
@@ -161,7 +161,7 @@ func main() {
 	// return.
 	if path := tui.RelaunchPath(final); path != "" {
 		if err := update.Relaunch(path); err != nil {
-			fmt.Fprintf(os.Stderr, "spettro was updated, but could not restart automatically: %v\nrun spettro again to use the new version.\n", err)
+			fmt.Fprintf(os.Stderr, "bulb was updated, but could not restart automatically: %v\nrun bulb again to use the new version.\n", err)
 		}
 	}
 }
@@ -174,7 +174,7 @@ func printVersionIfRequested(args []string) bool {
 	}
 	switch args[0] {
 	case "--version", "-v", "-version", "version":
-		fmt.Println("spettro " + version.App)
+		fmt.Println("bulb " + version.App)
 		return true
 	}
 	return false

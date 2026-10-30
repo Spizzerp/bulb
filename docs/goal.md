@@ -1,6 +1,6 @@
 # Goal Mode (`/goal`)
 
-Spettro can operate autonomously — you set an objective and the agent runs
+Bulb can operate autonomously — you set an objective and the agent runs
 continuously until it is done, stalled, or hits a safety limit. This is called
 **goal mode**.
 
@@ -30,7 +30,7 @@ tool-loop turns — until one of these happens:
 ### The goal loop
 
 1. You run `/goal <objective>`.
-2. Spettro dispatches the objective as a task to the **coding** orchestrator
+2. Bulb dispatches the objective as a task to the **coding** orchestrator
    with the `GoalModePreamble` prepended: instructions to work autonomously,
    not ask for continuation, verify work, and call `goal-complete` when done.
 3. That run completes — either because the agent finished, or because it hit
@@ -39,14 +39,14 @@ tool-loop turns — until one of these happens:
    the agent that only `goal-complete` finishes the run, so without it a
    single iteration could run forever and the checks below would never fire.
    If the agent called `goal-complete`, the goal ends.
-4. If not, Spettro checks for progress (see below) and either:
+4. If not, Bulb checks for progress (see below) and either:
    - dispatches another iteration (the agent resumes where it left off), or
    - stalls the goal and reports why.
 5. The loop repeats until one of the termination conditions fires.
 
 ### Progress detection
 
-Between iterations, Spettro fingerprints the workspace by hashing
+Between iterations, Bulb fingerprints the workspace by hashing
 `git status --porcelain` output. If the signature does not change across
 consecutive iterations, the goal is considered **stalled**. The stall limit is
 configurable (default: 3 iterations with no change).
@@ -62,7 +62,7 @@ The LLM conversation from each iteration is fed back as the structured
 byte-stable so prompt caching hits and previously generated tokens are never
 re-summarised or discarded between turns.
 
-When the context window gets tight, Spettro **auto-compacts** between
+When the context window gets tight, Bulb **auto-compacts** between
 iterations (respecting your auto-compact threshold). The compaction preserves
 a summary that the next iteration extends.
 
@@ -110,7 +110,7 @@ Goal mode pauses on approval prompts the same way ordinary runs do. For
 /goal deploy the application to staging
 ```
 
-When permission is `ask-first` or `restricted`, Spettro prints a warning
+When permission is `ask-first` or `restricted`, Bulb prints a warning
 before starting the goal loop so you know what to expect.
 
 ## Headless goal mode
@@ -118,7 +118,7 @@ before starting the goal loop so you know what to expect.
 Outside the TUI, start a goal run with:
 
 ```bash
-spettro --goal "update all dependencies" --sandbox workspace-write
+bulb --goal "update all dependencies" --sandbox workspace-write
 ```
 
 Flags available:
@@ -163,7 +163,7 @@ Iterations: 3, Duration: 2m15s
 ## Steering a running goal
 
 You don't have to stop a goal to correct its course. Type a message while the
-run is active and press enter — Spettro asks how to deliver it:
+run is active and press enter — Bulb asks how to deliver it:
 
 - **Steer now** — the message is injected into the running conversation at the
   agent's next step boundary, as a user turn the model sees before its next

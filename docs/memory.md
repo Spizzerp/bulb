@@ -1,6 +1,6 @@
 # Persistent Memory
 
-Spettro can remember short facts and preferences across sessions. Memory lives
+Bulb can remember short facts and preferences across sessions. Memory lives
 in two plain-Markdown files:
 
 | Scope | File | Contents |

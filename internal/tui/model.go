@@ -344,12 +344,8 @@ type Model struct {
 	historyDraft    string
 	historyBrowsing bool
 
-	eyeFrame        int
-	eyeIntroFrame   int
-	eyeIntroStarted bool
-	idleEyesFrame   int
-	idleEyesArmed   bool
-	thinking        bool
+	eyeFrame int
+	thinking bool
 	// tickArmed records that a tickMsg is on its way, so armTimers never
 	// starts a second tick chain (which would double the animation speed).
 	tickArmed bool

@@ -139,7 +139,7 @@ type Palette struct {
 	// agent there collapses onto the blue ones as soon as the 256-colour
 	// inks are dropped for the light theme.
 	//
-	// That renderer is not reachable from cmd/spettro (see the package
+	// That renderer is not reachable from cmd/bulb (see the package
 	// comment on internal/ui), so this is the one role no user's terminal
 	// ever paints. It is here so the palette stays complete for the tests
 	// that do reach it, not because it is on screen somewhere.

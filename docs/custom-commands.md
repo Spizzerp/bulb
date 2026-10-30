@@ -7,7 +7,7 @@ session history, and prompt caching like any other prompt.
 
 ## Where command files live
 
-Spettro scans two directories at startup:
+Bulb scans two directories at startup:
 
 | Location | Scope |
 | --- | --- |
@@ -17,7 +17,7 @@ Spettro scans two directories at startup:
 On a name conflict the **project definition wins**. Subdirectories create
 namespaced names: `.spettro/commands/git/pr.toml` becomes `/git:pr`.
 
-Command files are discovered when Spettro starts; restart after adding or
+Command files are discovered when Bulb starts; restart after adding or
 editing files.
 
 ## File formats
@@ -145,7 +145,7 @@ prompt = "Run `go test ./{{args}}/`. If anything fails, diagnose and fix it, the
 ## Troubleshooting
 
 - **Command doesn't appear** — check the file extension (`.toml` or `.md`
-  only), then restart Spettro. Files that fail to parse (e.g. a TOML file
+  only), then restart Bulb. Files that fail to parse (e.g. a TOML file
   missing `prompt`, or an `.md` with an empty body) are skipped.
 - **"requires yolo permission"** — the prompt contains `` !`…` ``; either
   switch with `/permission yolo` or remove the interpolation.

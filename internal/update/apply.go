@@ -21,9 +21,9 @@ import (
 // (see .github/workflows/release.yml).
 func binaryName() string {
 	if runtime.GOOS == "windows" {
-		return "spettro.exe"
+		return "bulb.exe"
 	}
-	return "spettro"
+	return "bulb"
 }
 
 // archiveExt is the container each platform's release is published in. Windows
@@ -37,7 +37,7 @@ func archiveExt() string {
 }
 
 func assetName(version string) string {
-	return fmt.Sprintf("spettro_%s_%s_%s.%s", version, runtime.GOOS, runtime.GOARCH, archiveExt())
+	return fmt.Sprintf("bulb_%s_%s_%s.%s", version, runtime.GOOS, runtime.GOARCH, archiveExt())
 }
 
 // Apply downloads the release archive matching the running OS/arch, verifies
@@ -141,7 +141,7 @@ func downloadToTemp(ctx context.Context, url, dir string) (path string, sum stri
 		return "", "", fmt.Errorf("HTTP %d", resp.StatusCode)
 	}
 
-	f, err := os.CreateTemp(dir, ".spettro-update-*."+archiveExt())
+	f, err := os.CreateTemp(dir, ".bulb-update-*."+archiveExt())
 	if err != nil {
 		return "", "", err
 	}
@@ -218,7 +218,7 @@ func extractBinaryZip(archivePath, dir string) (string, error) {
 // writeExtracted copies the release binary into a fresh temp file next to the
 // installed one, so the later install can be a same-filesystem rename.
 func writeExtracted(src io.Reader, dir string) (string, error) {
-	out, err := os.CreateTemp(dir, ".spettro-new-*")
+	out, err := os.CreateTemp(dir, ".bulb-new-*")
 	if err != nil {
 		return "", err
 	}

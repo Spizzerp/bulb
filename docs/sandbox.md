@@ -1,6 +1,6 @@
 # OS Sandboxing
 
-Spettro can lock down the commands the agent runs using the operating system's native sandbox mechanisms: **Seatbelt** on macOS, **Landlock** on Linux, and **Mandatory Integrity Control** on Windows. It is opt-in, immutable for the lifetime of the session, and invisible to the model. The policy is set only by the operator through CLI flags or `spettro.agents.toml`.
+Bulb can lock down the commands the agent runs using the operating system's native sandbox mechanisms: **Seatbelt** on macOS, **Landlock** on Linux, and **Mandatory Integrity Control** on Windows. It is opt-in, immutable for the lifetime of the session, and invisible to the model. The policy is set only by the operator through CLI flags or `spettro.agents.toml`.
 
 What each platform can actually enforce differs — see [Platform details](#platform-details). In particular, Windows confines writes but not reads, and cannot confine the network at all (a network policy there fails closed rather than running unconfined).
 
@@ -21,7 +21,7 @@ A coding agent executes shell commands, writes files, and sometimes makes networ
 |-------|-------------|----------|
 | Shell commands | OS kernel | Every command spawned through `bash` (or `pty-start`) is wrapped. |
 | File tools | In-process check | `file-write`/`file-edit` honor the same write scope, so `read-only` cannot be bypassed by writing through a file tool instead of a shell redirect. |
-| Spettro itself | OS kernel (write-only backstop) | The parent process cannot write outside the workspace, config/project directories, and temp dirs. Under `sudo` the directory that holds the API keys (the invoking user's `~/.spettro`) is writable too, since keys load after the confinement. Reads and network stay open so the app can talk to the LLM API and read skills. |
+| Bulb itself | OS kernel (write-only backstop) | The parent process cannot write outside the workspace, config/project directories, and temp dirs. Under `sudo` the directory that holds the API keys (the invoking user's `~/.spettro`) is writable too, since keys load after the confinement. Reads and network stay open so the app can talk to the LLM API and read skills. |
 
 The model **cannot** inspect or change the policy. There is no sandbox tool exposed, no prompt hint, and blocked operations surface as ordinary command failures.
 
@@ -51,7 +51,7 @@ An explicit `--sandbox off` on the command line beats a manifest that enables it
 |--------|--------|
 | `all` | No network confinement (default). |
 | `localhost` | Loopback traffic only. **Linux caveat:** Landlock cannot scope rules to loopback, so this degrades to deny-all TCP (fail-closed). |
-| `none` | Denies all network access the platform mechanism can govern. The Spettro process still reaches the LLM API, because parent traffic is never sandboxed. |
+| `none` | Denies all network access the platform mechanism can govern. The Bulb process still reaches the LLM API, because parent traffic is never sandboxed. |
 | `ports:443,8080` | Allows TCP on the listed ports only, any host. DNS may need a local socket on macOS; on Linux UDP/unix sockets are not covered. |
 
 ## Configuration
@@ -59,9 +59,9 @@ An explicit `--sandbox off` on the command line beats a manifest that enables it
 ### Command-line flags
 
 ```bash
-spettro --sandbox read-only --sandbox-net none
-spettro --sandbox workspace-write --sandbox-allow-dir /data --sandbox-allow-read-dir ~/go/pkg/mod
-spettro --sandbox-net ports:443,8080
+bulb --sandbox read-only --sandbox-net none
+bulb --sandbox workspace-write --sandbox-allow-dir /data --sandbox-allow-read-dir ~/go/pkg/mod
+bulb --sandbox-net ports:443,8080
 ```
 
 - `--sandbox <mode>`: set filesystem policy.
@@ -99,7 +99,7 @@ See [`AGENTS.md`](../AGENTS.md) for the full manifest schema.
 - UDP, MPTCP, and unix sockets are not covered.
 - `localhost` degrades to deny-all TCP because Landlock cannot scope rules to loopback.
 - Unlike namespace tools such as `bwrap`, Landlock needs no privileges or user namespaces, so it works in locked-down containers.
-- On Linux, sandboxed commands re-exec the Spettro binary itself, which applies Landlock and then `exec()`s the real command. Programs using this package must call `sandbox.RunChildIfRequested()` as the very first thing in `main()`.
+- On Linux, sandboxed commands re-exec the Bulb binary itself, which applies Landlock and then `exec()`s the real command. Programs using this package must call `sandbox.RunChildIfRequested()` as the very first thing in `main()`.
 - If the kernel cannot enforce the requested policy, the child exits **126** so an opt-in sandbox never silently runs unconfined.
 
 ### Windows (Mandatory Integrity Control)
@@ -127,7 +127,7 @@ roots the policy *does* allow are opened back up by labelling them Low.
   undone when the session ends.
 - A Low process cannot write to the ordinary per-user temp directory, so `TEMP`
   and `TMP` are redirected to a labelled scratch directory under
-  `%LOCALAPPDATA%\spettro\sandbox-temp`. Compilers and package managers that
+  `%LOCALAPPDATA%\bulb\sandbox-temp`. Compilers and package managers that
   write temp files keep working.
 - `ConfineParent` is not available: a process cannot lower its own integrity level
   and go on writing its own config and session store. Startup prints a warning and
@@ -154,7 +154,7 @@ The tag is purely informational and is hidden when the sandbox is disabled.
 ### Read-only review session
 
 ```bash
-spettro --sandbox read-only --sandbox-net none
+bulb --sandbox read-only --sandbox-net none
 ```
 
 The agent can read the project and run read-only tooling, but it cannot modify files or make network requests.
@@ -162,7 +162,7 @@ The agent can read the project and run read-only tooling, but it cannot modify f
 ### Safe autonomous run
 
 ```bash
-spettro --goal "refactor the auth package" --sandbox workspace-write --sandbox-net ports:443
+bulb --goal "refactor the auth package" --sandbox workspace-write --sandbox-net ports:443
 ```
 
 The agent can write in the workspace and reach the LLM API, but it cannot read other projects or exfiltrate data to arbitrary hosts.
@@ -170,14 +170,14 @@ The agent can write in the workspace and reach the LLM API, but it cannot read o
 ### Build with external cache
 
 ```bash
-spettro --sandbox read-only --sandbox-allow-read-dir ~/go/pkg/mod
+bulb --sandbox read-only --sandbox-allow-read-dir ~/go/pkg/mod
 ```
 
 A read-only policy blocks workspace writes, yet the Go module cache under `$HOME` is readable so builds can resolve dependencies.
 
 ## Important caveats
 
-- **LLM API traffic is never sandboxed.** The Spettro parent process must reach the model provider, so `NetNone` still lets the agent call the API.
+- **LLM API traffic is never sandboxed.** The Bulb parent process must reach the model provider, so `NetNone` still lets the agent call the API.
 - **Reads are confined.** System paths stay readable so binaries and libraries load, but the rest of the home tree is blocked. Add toolchain caches with `--sandbox-allow-read-dir` when needed.
 - **`read-only` still allows temp writes.** Temp dirs and `/dev` remain writable so ordinary commands (`>/dev/null`, compiler scratch files) keep working. The guarantee is that the agent cannot modify project or user files.
 - **Failure is closed.** On Linux an unenforceable policy causes the child to exit 126, so you will notice if the sandbox could not be applied.

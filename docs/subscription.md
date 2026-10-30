@@ -1,8 +1,8 @@
 # Spettro Subscription
 
-Spettro offers a paid subscription plan that provides:
+Bulb offers a paid subscription plan that provides:
 
-- **Inference credits** — use Spettro-managed models through the `spettro`
+- **Inference credits** — use Bulb-managed models through the `bulb`
   provider without configuring third-party API keys.
 - **Multi-model access** — several models available under a single key,
   tiered by the plan (see [Pricing](https://spettro.app/pricing)).
@@ -19,10 +19,10 @@ Inside the TUI:
 
 This starts a **device-flow** login:
 
-1. Spettro contacts the backend and gets a browser URL.
+1. Bulb contacts the backend and gets a browser URL.
 2. A message in the chat shows the URL. Copy it.
 3. Open the URL in your browser and sign in.
-4. Once authenticated, Spettro receives an `ep_` API key and saves it
+4. Once authenticated, Bulb receives an `ep_` API key and saves it
    encrypted to `~/.spettro/keys.enc`.
 
 The flow polls the backend every 2 seconds until you complete the browser
@@ -41,14 +41,14 @@ This:
 
 - Removes the saved `ep_` API key from the encrypted store.
 - Clears the Spettro Subscription models from the provider manager.
-- Stops any in-flight inference through the Spettro proxy.
+- Stops any in-flight inference through the Bulb proxy.
 
 You can sign back in at any time with `/login`.
 
 ## Active model list
 
-Once signed in, Spettro fetches the models available on your plan from
-`GET /v1/models`. These appear in the model selector under the **Spettro**
+Once signed in, Bulb fetches the models available on your plan from
+`GET /v1/models`. These appear in the model selector under the **Bulb**
 provider group, labelled with your plan tier.
 
 The model list is refreshed in the background periodically so new models or
@@ -60,7 +60,7 @@ When signed in, the top bar of the TUI shows your plan name, status, and
 credit usage.
 
 ```
-Spettro (Pro)
+Bulb (Pro)
 ```
 
 If the plan is in a special state (e.g. past due, cancelled), the status
@@ -69,7 +69,7 @@ is shown alongside the plan name.
 ## Overflow rate limiting
 
 When a pro or max account exhausts its monthly credit budget, inference
-continues on a free-tier model — but at a reduced rate. The Spettro backend
+continues on a free-tier model — but at a reduced rate. The Bulb backend
 returns `429 Too Many Requests` with a `Retry-After` header. The provider
 manager transparently waits these out and retries, so a short spell of
 throttling never shows up as an error in the chat. You may notice slower
@@ -98,7 +98,7 @@ refresh completes. It is updated asynchronously in the background.
 
 ## API
 
-The Spettro backend (overridable via the `SPETTRO_API_URL` environment
+The Bulb backend (overridable via the `SPETTRO_API_URL` environment
 variable) exposes:
 
 | Endpoint | Purpose |

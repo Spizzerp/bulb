@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fake OpenAI-compatible server for driving the Spettro TUI end to end.
+"""Fake OpenAI-compatible server for driving the Bulb TUI end to end.
 
 It answers GET /v1/models with one model and POST /v1/chat/completions with a
 scripted sequence of streamed responses, so no real provider (and no API

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Interleaved TUI first-frame timing for two or more spettro binaries.
+"""Interleaved TUI first-frame timing for two or more bulb binaries.
 
 usage: firstframe.py [--n N] [--warmup W] [--cwd DIR] [--home-template DIR]
                      [--marker REGEX] [--cols C] [--rows R] LABEL=BINARY ...
@@ -16,7 +16,7 @@ happens during the warm-up runs instead of in every measured one. The cwd is
 added to the copy's trusted.json so no trust prompt covers the frame.
 
 Without --home-template the home starts empty (first launch, onboarding).
-For a keyed launch, prepare a template once: run spettro with HOME set to a
+For a keyed launch, prepare a template once: run bulb with HOME set to a
 scratch directory, enter a dummy key for an OpenAI-compatible endpoint, quit,
 and pass that directory. Never pass your real home.
 

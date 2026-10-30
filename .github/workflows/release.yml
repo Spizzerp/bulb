@@ -49,13 +49,13 @@ jobs:
           CGO_ENABLED: 0
         run: |
           VERSION="${GITHUB_REF_NAME}"
-          ARCHIVE_NAME="spettro_${VERSION}_${{ matrix.goos }}_${{ matrix.goarch }}"
-          # Windows ships spettro.exe in a .zip: Windows has no bundled
+          ARCHIVE_NAME="bulb_${VERSION}_${{ matrix.goos }}_${{ matrix.goarch }}"
+          # Windows ships bulb.exe in a .zip: Windows has no bundled
           # tar-aware unpacker for a hand-download, and internal/update picks
           # its unpacker from the same per-OS convention.
-          BINARY=spettro
+          BINARY=bulb
           if [ "${{ matrix.goos }}" = "windows" ]; then
-            BINARY=spettro.exe
+            BINARY=bulb.exe
           fi
           # The release build flags are defined once, in the Makefile.
           make release-binary VERSION="${VERSION}" OUT="${BINARY}"
@@ -68,7 +68,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: spettro_${{ matrix.goos }}_${{ matrix.goarch }}
+          name: bulb_${{ matrix.goos }}_${{ matrix.goarch }}
           path: |
             *.tar.gz
             *.zip
