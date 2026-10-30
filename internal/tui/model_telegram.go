@@ -441,7 +441,7 @@ lifecycle
 
 inside Telegram (sent from your phone):
   any plain text                  → new prompt for the active agent
-  any /-command                   → executed as a Spettro slash command
+  any /-command                   → executed as a Bulb slash command
   /cancel                         → interrupt the running agent
   /help, /whoami                  → bot-side info
   plain text while a question is pending → answers the ask-user dialog

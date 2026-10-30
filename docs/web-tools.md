@@ -1,6 +1,6 @@
 # Web Tools: web-search, web-fetch, download
 
-Spettro ships three built-in tools that let agents reach the web: searching,
+Bulb ships three built-in tools that let agents reach the web: searching,
 reading pages as markdown, and downloading files into the workspace. All three
 share the same hardened HTTP client and the same network approval flow.
 

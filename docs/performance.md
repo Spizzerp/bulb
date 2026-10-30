@@ -2,7 +2,7 @@
 
 Measured on 2026-09-27. This page is for two readers:
 
-- **Users** who want to know what Spettro costs in start-up time, CPU and
+- **Users** who want to know what Bulb costs in start-up time, CPU and
   memory, and how it compares with Claude Code and OpenCode on the same
   machine and the same workload.
 - **Maintainers** who change a hot path and need to re-measure it the same
@@ -21,7 +21,7 @@ same workload.
 - **Machine.** One Apple M-series Mac (darwin/arm64), shared with other
   jobs. Every row gives the 1-minute load average it ran at; compare rows
   only at similar load.
-- **Builds.** Both Spettro binaries were built with the release flags,
+- **Builds.** Both Bulb binaries were built with the release flags,
   `GOWORK=off go build -trimpath -ldflags='-s -w'`. Claude Code was version
   2.1.283 and OpenCode version 1.18.32, as installed.
 - **Interleaving.** Base and now always ran alternately, the order
@@ -40,7 +40,7 @@ same workload.
 - **Timing points.**
   - *First frame*: from `fork` of the process in a 120x40 pseudo-terminal to
     the first output that, with escape sequences stripped, contains the
-    CLI's ready marker (for Spettro, the permission mode in the status bar
+    CLI's ready marker (for Bulb, the permission mode in the status bar
     on the frame's last row).
   - *Headless / ACP ready*: from `fork` to the `SPETTRO_PORT=` line, or to
     the JSON-RPC response of `initialize` / `session/new`.
@@ -52,7 +52,7 @@ same workload.
 ## Results
 
 "Met?" compares the median of "now" with the target. A dash means the
-row was not measured for that CLI (most rows exercise Spettro internals that
+row was not measured for that CLI (most rows exercise Bulb internals that
 have no counterpart).
 
 | Metric | Base | Now | Target | Met? | Claude Code | OpenCode | Load (1m) |
@@ -93,11 +93,11 @@ Notes on the comparison columns:
 
 - The first-frame and idle-CPU cells for Claude Code and OpenCode come from
   one run that interleaved all four CLIs (n=15 for first frame, n=5 for
-  idle). The first-frame run happened at load 18.6; in it Spettro base took
+  idle). The first-frame run happened at load 18.6; in it Bulb base took
   167.6 ms and now 47.0 ms, so the order is the same as in the quieter
-  Spettro-only run (n=20, load 2.2) that the Base and Now cells show.
+  Bulb-only run (n=20, load 2.2) that the Base and Now cells show.
 - The 200-turn columns for Claude Code and OpenCode are single runs made
-  next to the Spettro runs. Their CPU and RSS cover the whole process tree.
+  next to the Bulb runs. Their CPU and RSS cover the whole process tree.
 
 ### What the rows measure
 
@@ -110,7 +110,7 @@ Notes on the comparison columns:
   pseudo-terminal until the last tool result is on screen. The same turn
   then streams a 1000-token answer at 50 tokens/s; token latency is the
   time from the fake server sending a token to that token appearing on the
-  screen (every token carries a unique marker). During that stream Spettro
+  screen (every token carries a unique marker). During that stream Bulb
   used 22 % of a core, against 104 % for base, which fell behind; 40 of the
   1000 token markers never showed up in its output.
 - **Engine overhead per step** is the agent loop's own work per model step
@@ -133,15 +133,15 @@ thinks only as far as its next tool call, writes code and checks into files
 instead of drafting them in its reasoning, and keeps final answers short.
 Every verification rule stayed as it was.
 
-The change was measured on the 20-task benchmark suite with the Spettro
+The change was measured on the 20-task benchmark suite with the Bulb
 subscription model SuperFast, all three configurations running at the same
 time under the same load:
 
 | Configuration | Passed | Mean wall time | Mean tokens per task | Output tokens per call |
 |---|---|---|---|---|
 | OpenCode 1.18.32 (1 run per task) | 19/20 | 219 s | 422k | 1,165 |
-| Spettro before the rewording (2 runs) | 38/40 | 202 s | 439k | 1,264 |
-| Spettro after the rewording (2 runs) | 38/40 | 182 s | 322k | 1,149 |
+| Bulb before the rewording (2 runs) | 38/40 | 202 s | 439k | 1,264 |
+| Bulb after the rewording (2 runs) | 38/40 | 182 s | 322k | 1,149 |
 
 Tokens per task dropped 27 % (24 % on an earlier 10-task screen) with the
 same pass rate; both builds failed the same two runs. Wall time dropped 10 %
@@ -184,9 +184,9 @@ regression guards that do run in CI are deterministic instead:
 two builds and isolate the home for every run:
 
 ```sh
-scripts/perf/procab.py base='/tmp/spettro-base.bin --help' now='bin/spettro --help'
+scripts/perf/procab.py base='/tmp/bulb-base.bin --help' now='bin/bulb --help'
 scripts/perf/firstframe.py --cwd ~/code/some-repo --home-template /tmp/keyed-home \
-    base=/tmp/spettro-base.bin now=bin/spettro
+    base=/tmp/bulb-base.bin now=bin/bulb
 ```
 
 Binary size is `make size`.
@@ -219,7 +219,7 @@ little code:
   case re-enables Go with a project `.spettro/lsp.json`.
 
 Whatever harness you use, keep every run's `HOME`, `USERPROFILE` and XDG
-directories in a scratch directory. A harness that runs Spettro with your
+directories in a scratch directory. A harness that runs Bulb with your
 real home rewrites your configuration and keys.
 
 ## Targets not met, and why
@@ -238,10 +238,10 @@ into three parts:
 | Phase | Time |
 |---|---|
 | Process start to `main` (dynamic loading, Go runtime and package initialisation) | 21 ms from the fork in the pty |
-| Spettro's own bootstrap plus `tui.New` | 4 ms |
+| Bulb's own bootstrap plus `tui.New` | 4 ms |
 | Waiting for Bubble Tea's first renderer tick | 17.5 ms |
 
-Spettro's own part is down to 4 ms; in base it was about 130 ms by
+Bulb's own part is down to 4 ms; in base it was about 130 ms by
 subtraction (scrypt key derivation, a catalog fetch, git status and a second
 manifest parse all ran before the first frame). The remaining 17.5 ms is
 Bubble Tea's renderer: it paints only on its 60 fps ticker, so the first
@@ -260,7 +260,7 @@ the first frame on screen was a blank page reading `loading…`. The host now
 passes the terminal size to `tui.New` (`tui.WithInitialSize`), so the render
 before the first tick is already the real frame.
 
-The process-start share is also why the frame is 21 ms before Spettro runs a
+The process-start share is also why the frame is 21 ms before Bulb runs a
 line of its own code: see the next section.
 
 ### `--version` (14.3 ms) and `--help` (14.9 ms) against 10 ms
@@ -274,7 +274,7 @@ below. `--version` does exit 0 now (base had no such flag and exited 2).
 
 ### Binary size (50.2 MB against 42 MB) and `--help` RSS (26.4 MB against 25 MB)
 
-Spettro's own packages are about 2.5 MB of the binary's code and data; the
+Bulb's own packages are about 2.5 MB of the binary's code and data; the
 rest is the Go runtime and standard library and the dependencies. The
 largest avoidable part is in the provider stack: fantasy's Anthropic
 provider links Bedrock and Vertex support unconditionally, which pulls in
@@ -288,7 +288,7 @@ no work of its own, so its RSS is mostly the runtime and the linked
 packages' code and data touched while the process starts, and it shrinks
 with the binary.
 
-What was possible without forking was done: Spettro's own code now imports
+What was possible without forking was done: Bulb's own code now imports
 the SDK packages fantasy already depends on instead of second copies (part
 of the 4.8 MB saved), every packaging path strips symbols, and the macOS
 clipboard library is loaded on first paste instead of at start (an earlier
@@ -339,7 +339,7 @@ which goroutine owns it).
   walker; a literal glob prefix is walked directly; ripgrep is downloaded
   (pinned, checksum-verified) on first use, with the Go search as fallback;
   one symbol index shared per workspace.
-- **Provider** (`d70e626`): Spettro's own chat-completions client for
+- **Provider** (`d70e626`): Bulb's own chat-completions client for
   OpenAI-compatible, subscription and local endpoints, which re-encodes only
   the messages a step added and decodes streamed tool-call arguments in
   linear time; the fantasy SDK stays as the fallback and for Anthropic

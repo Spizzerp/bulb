@@ -3,7 +3,7 @@
 A **workflow** is a small JavaScript program that decides — in ordinary
 control flow, not by asking a model at every step — which sub-agents
 run, in what order, and how their results combine. The model writes the
-script for the task in front of it; Spettro executes it exactly as
+script for the task in front of it; Bulb executes it exactly as
 written.
 
 As written is not the same as fixed in advance. A script can discover its
@@ -127,7 +127,7 @@ turn:
 | Config file | `"ultra": true` in `~/.spettro/config.json`. |
 
 The setting is saved to your user config, so it carries over to new
-sessions and applies wherever Spettro runs: the TUI, ACP editors, `/goal`
+sessions and applies wherever Bulb runs: the TUI, ACP editors, `/goal`
 loops and headless mode. It takes effect from the next turn, because the
 system prompt is fixed for the length of a run to keep prompt caching
 hitting. While it is on, every turn behaves as if the message contained
@@ -191,7 +191,7 @@ The body runs inside an async function, so `await` and a top-level
 ### The header
 
 `export const meta` must be a **pure object literal**: no variables,
-calls, spreads or template interpolation. Spettro checks that before it
+calls, spreads or template interpolation. Bulb checks that before it
 evaluates anything, on the parsed header alone. Objects, arrays, strings,
 numbers (with an optional sign), booleans, `null`, `undefined`, `NaN`,
 `Infinity`, template strings with no `${…}`, and `+` between those — a
@@ -240,7 +240,7 @@ keeps a header from running code.
 | --- | --- |
 | `label` | Display label; defaults to the prompt's first line. |
 | `phase` | Assign this call to a phase explicitly (use inside `pipeline`/`parallel` stages, where the global phase may have moved on). |
-| `schema` | A JSON Schema. Spettro appends the contract to the prompt, parses the answer back, and retries with the parse error if it does not fit. |
+| `schema` | A JSON Schema. Bulb appends the contract to the prompt, parses the answer back, and retries with the parse error if it does not fit. |
 | `agentType` | Manifest agent to run as (default `general-purpose`). Orchestrators are rejected. |
 | `model` | Pin this call to a different model than the session's. |
 | `effort` | `off`/`low`/`medium`/`high`/`x-high`/`max` thinking level for this call. |
@@ -298,7 +298,7 @@ an edit by one landing under another's feet. Setting
 `isolation: "worktree"` on an `agent()` call (or on a single `agent`
 tool delegation) gives that sub-agent a workspace of its own instead:
 
-1. Spettro creates a git **worktree** under
+1. Bulb creates a git **worktree** under
    `.spettro/worktrees/<instance>-<id>/` in the project root, on a fresh
    **branch named after the sub-agent** (`spettro/code-3-a1b2c3`), forked
    from the current `HEAD`.
@@ -315,7 +315,7 @@ tool delegation) gives that sub-agent a workspace of its own instead:
    checkout, one merge at a time. Leftover uncommitted work is committed
    first, with a Conventional Commits message written by the LLM from the
    diff (the same machinery as auto-commit; a stock
-   `spettro: subagent … work` message is the fallback if that fails).
+   `bulb: subagent … work` message is the fallback if that fails).
    After a clean merge the branch and its worktree are **deleted**.
 
 The merge happens once per call, after the last attempt, so a
@@ -356,7 +356,7 @@ Pass timestamps in through `args`, and vary work by item index.
 
 A script with a hardcoded list of files or angles replays the plan its
 author had in mind, which goes stale. The task's shape usually shows up
-only once agents start reading. Spettro's answer is ordinary control flow
+only once agents start reading. Bulb's answer is ordinary control flow
 plus a few helpers, so the script decides the shape at runtime:
 
 ```javascript
@@ -508,7 +508,7 @@ call that started it:
   session's runs, so a run paused in one iteration can be continued in
   the next. `/clear`, switching or resuming another session, closing an
   ACP session, and quitting stop every paused run.
-- **Headless**, including `spettro --goal`. Paused runs belong to the
+- **Headless**, including `bulb --goal`. Paused runs belong to the
   turn, so they must be continued within it, which is what the model
   does anyway.
 - **Esc** stops a run that is *running*, as before. A run that is
@@ -767,7 +767,7 @@ child throws.
 ### Templates
 
 A saved script that hardcodes "these eight files" replays its author's
-plan and goes stale as the code moves. Spettro treats saved workflows as
+plan and goes stale as the code moves. Bulb treats saved workflows as
 **templates**:
 
 - **The agent adapts rather than replays.** It reads the saved script

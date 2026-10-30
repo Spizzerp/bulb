@@ -231,7 +231,7 @@ const replyHeadChars = 160
 // logReply records one provider reply at debug level: why it stopped, what
 // it carried, and the raw details a dropped tool call would show up in (see
 // provider.ResponseDiagnostics). Debug records are discarded unless
-// SPETTRO_DEBUG_LOG names a log file (see cmd/spettro), so this costs
+// SPETTRO_DEBUG_LOG names a log file (see cmd/bulb), so this costs
 // nothing in normal runs and never writes to the terminal.
 func logReply(agentID string, step int, resp provider.Response) {
 	reasoningChars := 0

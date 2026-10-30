@@ -1,10 +1,10 @@
-# Spettro agent manifest
+# Bulb agent manifest
 
-Spettro supports a project-level agent manifest at:
+Bulb supports a project-level agent manifest at:
 
 - `spettro.agents.toml`
 
-If the file is missing, Spettro uses an internal default manifest.
+If the file is missing, Bulb uses an internal default manifest.
 
 ## Goals
 
@@ -138,7 +138,7 @@ This file lets you define, in one place:
   (writes confined to workspace + temp, reads confined to system + workspace),
   or `read-only` (also blocks workspace writes). Enforced via Seatbelt (macOS) /
   Landlock (Linux) for shell commands AND in-process for the `file-write`/
-  `file-edit` tools, and the spettro process is write-confined as a backstop.
+  `file-edit` tools, and the bulb process is write-confined as a backstop.
   The boundary is invisible to the model (no tool, no prompt hint); overridable
   with the `--sandbox` CLI flag. See `docs/configuration.md`.
 - `sandbox_net`: optional network policy for sandboxed commands: `all`
@@ -163,7 +163,7 @@ This file lets you define, in one place:
   a built-in's name (`bash`, `ls`, `hover`, ...); it then owns every call made
   by that name, and the built-ins it shadows stay reachable under their own
   names (see [Built-in tools](docs/tools.md#tools-of-your-own-with-a-built-ins-name)).
-  Spettro does not run tools of those kinds yet: a call of one fails without
+  Bulb does not run tools of those kinds yet: a call of one fails without
   running anything.
 - `name` (required)
 - `description`
@@ -237,7 +237,7 @@ reimplementing the loop.
 
 ## Validation rules
 
-Spettro validates at startup:
+Bulb validates at startup:
 
 - unknown TOML fields are rejected
 - tool IDs and agent IDs must be unique

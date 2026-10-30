@@ -1,6 +1,6 @@
 # Built-in tools
 
-These are the tools Spettro's agents call. Which ones an agent gets is set by
+These are the tools Bulb's agents call. Which ones an agent gets is set by
 its `allowed_tools` in [`spettro.agents.toml`](../AGENTS.md); each request
 only carries the schemas of the tools that agent may use.
 
@@ -57,7 +57,7 @@ Symlinked directories are not followed; `glob` lists symlinks to files,
 a built-in Go search otherwise; both give the same answers. When `rg` is not
 on PATH, the first `grep` that has to use the Go search starts a background
 download of ripgrep 15.2.0 for the platform into `~/.spettro/bin` (macOS,
-Linux, Windows; x86-64 and ARM). The archive's SHA-256 is pinned in Spettro
+Linux, Windows; x86-64 and ARM). The archive's SHA-256 is pinned in Bulb
 and checked before anything is unpacked. The download never delays a tool
 call, and a failure (offline, a proxy, an unsupported platform) only means
 the Go search stays in use for the session. It is skipped when the OS
@@ -104,7 +104,7 @@ With no language server configured or installed for the workspace (see
 [lsp](lsp.md)), `lsp` and `rename-symbol` are neither advertised nor found by
 `tool-search`, and the system prompt says there is none. This is decided
 once per process, for the life of that process: a server installed while
-spettro runs is picked up only after spettro restarts (a new session in the
+bulb runs is picked up only after bulb restarts (a new session in the
 same TUI or ACP process does not re-check).
 
 ## Shell environment
@@ -114,7 +114,7 @@ its `bash` calls run under. When `python` is not installed but `python3` is,
 it adds a line saying to use `python3`, and likewise for `pip` and `pip3`,
 since models type the bare names by habit. The check asks the same login
 shell the `bash` tool uses (`command -v`), so PATH additions from the user's
-profile count; on a PowerShell or cmd host it searches spettro's own PATH.
+profile count; on a PowerShell or cmd host it searches bulb's own PATH.
 The login shell runs in its own process group, as `bash` tool commands do,
 and is given 5 seconds: on timeout the whole group is killed and no line is
 added. Like the language-server check it runs once per process: the Environment
@@ -132,7 +132,7 @@ conversation, so a file read in an earlier turn still counts as read.
 
 Changes the agent's own foreground `bash` commands make (a formatter, a code
 generator, `sed -i`) do not trip the guard for `file-edit`. Just before such a
-command runs, Spettro checks which files it holds a hash for still hold
+command runs, Bulb checks which files it holds a hash for still hold
 exactly that content; right after, it re-hashes those whose size,
 modification time, change time (ctime) or inode the command changed, and the
 command's output ends with a note naming them (`note: this command changed
@@ -148,7 +148,7 @@ file last changed at least 2 seconds before its content was last confirmed,
 so a second change within the same timestamp tick (1 s on HFS+, 2 s on FAT)
 cannot hide behind an unchanged identity. Otherwise (a file written or read
 moments ago, a hash carried from an earlier turn, a file whose identity
-moved, or Windows, where Spettro reads no ctime) the file is re-read and its
+moved, or Windows, where Bulb reads no ctime) the file is re-read and its
 hash compared, and once confirmed long enough after its last change it needs
 only a `stat` from then on.
 
@@ -224,7 +224,7 @@ v14 notes in [AGENTS.md](../AGENTS.md#root-fields).
 ## Misspelt tool names
 
 Models trained on other harnesses often call a tool by a near spelling:
-`web_fetch`, `file_read`, `todo_write`, `Bash`. A call under a name Spettro
+`web_fetch`, `file_read`, `todo_write`, `Bash`. A call under a name Bulb
 does not know at all (not a built-in, a retired name, or a manifest tool or
 alias) is compared with the agent's tools ignoring case and reading `_` and
 spaces as `-`. When exactly one tool on the agent's `allowed_tools` matches,
@@ -237,7 +237,7 @@ When no allowed tool matches, or two do, nothing runs and the call fails as
 not allowed; for an unknown name the error names up to three allowed tools
 closest to it (`did you mean "file-read"?`), counting the same words in
 another order (`read_file`) as closest. Matching never grants anything:
-only tools the agent may already call are candidates, and a name Spettro
+only tools the agent may already call are candidates, and a name Bulb
 knows (an explorer calling `file-write`) is never re-routed.
 
 ## Tools of your own with a built-in's name
@@ -258,7 +258,7 @@ The TUI's transcript and activity panel label them with your tool's name
 (`References`, not `Found references to ...`), never with the built-in's
 wording, and so do an ACP editor's tool cards (`references {"symbol":...}`
 with a kind guessed from the name, not `LSP` with kind `search`).
-Spettro does not run `mcp`, `script` or `http` tools yet: a call of one is
+Bulb does not run `mcp`, `script` or `http` tools yet: a call of one is
 checked against the allow-list, permission rules and hooks like any other
 call, then fails with an error saying nothing was run.
 
@@ -278,7 +278,7 @@ call, then fails with an error saying nothing was run.
   core as its canonical tool is. A retired tool whose arguments differ from
   its canonical tool's (`repo-search`, `task-*`, `diagnostics`,
   `references`, `hover`, `lsp-restart`) is advertised with its old
-  description and schema, which Spettro converts to the canonical tool's
+  description and schema, which Bulb converts to the canonical tool's
   arguments. `skill-read` and `skill-list` also keep their old description
   and schema, because each did only half of what `skill` does (load one
   skill, or list them); the `skill` tool's code runs on their arguments

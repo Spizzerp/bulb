@@ -1,6 +1,6 @@
 # Extended thinking
 
-Spettro exposes a normalized **thinking level** that controls how much
+Bulb exposes a normalized **thinking level** that controls how much
 extra reasoning compute the active model spends before answering. The
 setting is independent of the active provider — the same `/thinking`
 command works regardless of who serves the model — and each provider
@@ -28,7 +28,7 @@ across adapters and are easy to test.
 
 | Provider | Native parameter | Notes |
 | --- | --- | --- |
-| **Anthropic** (`claude-opus-4*`, `claude-sonnet-4-5`, etc.) | `thinking.type=enabled` + `thinking.budget_tokens` | Spettro automatically bumps `max_tokens` so it stays > the budget (Anthropic rejects requests where they meet or overlap). |
+| **Anthropic** (`claude-opus-4*`, `claude-sonnet-4-5`, etc.) | `thinking.type=enabled` + `thinking.budget_tokens` | Bulb automatically bumps `max_tokens` so it stays > the budget (Anthropic rejects requests where they meet or overlap). |
 | **OpenAI** (`o3`, `o4-mini`, `gpt-5*`, …) | `reasoning.effort` (Responses API) / `reasoning_effort` (chat) | Only forwarded to models OpenAI marks as reasoning-capable, so setting a level does not break non-reasoning models like `gpt-4o`. |
 | **OpenAI-compatible** (Groq, xAI, DeepSeek, Google's compat endpoint, Spettro Subscription, local Ollama/LM Studio, …) | `reasoning_effort` on chat completions | Sent for every explicit level — `off` sends `none`, so reasoning-capable models can be disabled. Servers that don't know the parameter ignore it; only the unset default (never configured) omits it. |
 
@@ -43,7 +43,7 @@ ACP Thinking selector is the exception: it is always present (showing
 ## Automatic fallback
 
 If a model rejects the requested level (an effort value it doesn't define,
-or a thinking budget above its cap), Spettro does not surface the error —
+or a thinking budget above its cap), Bulb does not surface the error —
 it silently retries one level lower (`max` → `x-high` → `high` → `medium`
 → `low` → `off`) until the request goes through, so the run keeps its
 continuity. On the `reasoning_effort` wire format, levels that serialize to
@@ -71,7 +71,7 @@ at a glance whether you're paying for thinking compute.
 ## Caveats
 
 - Anthropic disallows non-default `temperature`, `top_p`, and `top_k`
-  alongside thinking. Spettro doesn't currently set those, so this isn't
+  alongside thinking. Bulb doesn't currently set those, so this isn't
   a concern in practice — but anyone forking the Anthropic adapter
   should keep this in mind.
 - Sub-agents inherit their parent's thinking level (so `agent` tool

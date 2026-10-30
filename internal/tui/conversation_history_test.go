@@ -48,7 +48,7 @@ func TestBuildConversationHistory_IncludesCompactSummary(t *testing.T) {
 	m := NewModelForTesting()
 	m.messages = []ChatMessage{
 		{Role: RoleSystem, Content: compactSummaryPrefix + "\n\nWe decided to use Postgres."},
-		{Role: RoleSystem, Content: "spettro ready — /help"},
+		{Role: RoleSystem, Content: "bulb ready — /help"},
 		{Role: RoleAssistant, Content: "ok"},
 		{Role: RoleUser, Content: "current"}, // trailing, excluded
 	}
@@ -56,7 +56,7 @@ func TestBuildConversationHistory_IncludesCompactSummary(t *testing.T) {
 	if !strings.Contains(got, "We decided to use Postgres") {
 		t.Fatalf("compact summary must be carried forward: %q", got)
 	}
-	if strings.Contains(got, "spettro ready") {
+	if strings.Contains(got, "bulb ready") {
 		t.Fatalf("routine system notices must not be included: %q", got)
 	}
 }

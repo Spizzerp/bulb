@@ -168,7 +168,7 @@ func permissionConfigOption(cfg *config.UserConfig) acpsdk.SessionConfigOption {
 	return acpsdk.SessionConfigOption{Select: &acpsdk.SessionConfigOptionSelect{
 		Id:           configIDPermission,
 		Name:         "Permission",
-		Description:  new("How Spettro requests approval for actions"),
+		Description:  new("How Bulb requests approval for actions"),
 		CurrentValue: acpsdk.SessionConfigValueId(current),
 		Options:      acpsdk.SessionConfigSelectOptions{Ungrouped: &options},
 		Type:         "select",

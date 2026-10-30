@@ -61,10 +61,10 @@ var allCommands = []commandDef{
 	{"/resume", "resume a previous conversation"},
 	{"/rewind", "rewind files and/or conversation to a checkpoint (esc esc)"},
 	{"/checkpoints", "checkpoint count and shadow-store disk usage"},
-	{"/storage", "report what spettro stores on disk, per artifact class"},
+	{"/storage", "report what bulb stores on disk, per artifact class"},
 	{"/storage clean", "reclaim disk: multi-select cleanup with safe defaults"},
-	{"/update", "update spettro to the latest release"},
-	{"/exit", "exit spettro"},
+	{"/update", "update bulb to the latest release"},
+	{"/exit", "exit bulb"},
 }
 
 var skillCommands = []commandDef{
@@ -363,7 +363,7 @@ func isInstantCommand(input string) bool {
 
 const helpText = `commands:
   /help          this message
-  /exit /quit    quit spettro  (or ctrl+c twice)
+  /exit /quit    quit bulb  (or ctrl+c twice)
   /update        download and install the latest release, then restart
   /login         sign in to your Spettro subscription (opens browser)
   /logout        sign out of your Spettro subscription
@@ -415,7 +415,7 @@ const helpText = `commands:
   /remote stop          stop the running remote control plane
   /remote status        print remote control URL and bearer token
   /telegram setup <token>  configure BotFather token (alias /tg)
-  /telegram allow <@u|id>  allow a username or chat ID to drive Spettro
+  /telegram allow <@u|id>  allow a username or chat ID to drive Bulb
   /telegram start|stop|status  control the Telegram relay
   /stats         show session token usage and prompt-cache hit rate
   /diff [path]   show diffs of files modified this session (all, or given paths)
@@ -425,7 +425,7 @@ const helpText = `commands:
   /resume        resume a previous saved conversation
   /rewind        restore files and/or conversation to a pre-edit checkpoint
   /checkpoints   show checkpoint count and shadow-store disk usage
-  /storage       report what spettro stores on disk (add "clean" to reclaim)
+  /storage       report what bulb stores on disk (add "clean" to reclaim)
 
 keys:
   esc esc        open the rewind picker (when idle)

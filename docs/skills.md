@@ -2,10 +2,10 @@
 
 A skill is a folder of instructions (and, optionally, scripts and reference
 files) that teaches the agent how to do one kind of task: fill a PDF form,
-cut a release, follow a team's review checklist. Spettro implements the
+cut a release, follow a team's review checklist. Bulb implements the
 [Agent Skills][spec] format, the same `SKILL.md` format Claude Code and
-OpenAI Codex use, so a skill written for either works in Spettro unchanged
-and Spettro finds the skills you already installed for them.
+OpenAI Codex use, so a skill written for either works in Bulb unchanged
+and Bulb finds the skills you already installed for them.
 
 [spec]: https://agentskills.io/specification
 
@@ -39,7 +39,7 @@ argument-hint: "[version]"
 EOF
 ```
 
-Then, in Spettro:
+Then, in Bulb:
 
 ```
 /skills               # the new skill is listed, with its path
@@ -102,7 +102,7 @@ description: Extract text from PDFs and fill forms.
 Only a skill with neither a description nor any body text is rejected (it
 is reported under warnings in `/skills`).
 
-Skill folders often come from repositories you cloned, so Spettro treats
+Skill folders often come from repositories you cloned, so Bulb treats
 them as untrusted input: terminal escape sequences and control characters
 are stripped from every frontmatter value (the `/` menu and the `$` list
 draw names and descriptions straight onto the terminal), and a `SKILL.md`
@@ -128,13 +128,13 @@ substitution.
 
 ## Where skills are found
 
-Spettro reads skills from its own folders and, unless you turn it off, from
+Bulb reads skills from its own folders and, unless you turn it off, from
 the folders Claude Code and Codex use. It only ever writes (install,
 uninstall) to its own folders; the others are read-only to it.
 
-| Family | Project path | User path | Written by Spettro |
+| Family | Project path | User path | Written by Bulb |
 | --- | --- | --- | --- |
-| Spettro | `.spettro/skills/` | `~/.spettro/skills/` | yes |
+| Bulb | `.spettro/skills/` | `~/.spettro/skills/` | yes |
 | Cross-client / Codex | `.agents/skills/` | `~/.agents/skills/` | no |
 | Claude Code | `.claude/skills/` | `~/.claude/skills/` | no |
 | Codex (legacy) | `.codex/skills/` | `$CODEX_HOME/skills/`, else `~/.codex/skills/` | no |
@@ -162,12 +162,12 @@ this order wins:
 
 1. Project before user.
 2. Within the project, the folder nearest the working directory first.
-3. Within one folder, the families in table order: Spettro, `.agents`,
+3. Within one folder, the families in table order: Bulb, `.agents`,
    `.claude`, `.codex`, `.openai`.
 
 The losers are listed under "shadowed" in `/skills`, so a clash is never
 silent. Note that Claude Code resolves the other way round (your personal
-skill beats the project's); Spettro lets the repository's copy win because
+skill beats the project's); Bulb lets the repository's copy win because
 it is the one the team reviewed for that code base.
 
 Skills also share the `/` namespace with commands. **Built-in commands
@@ -249,9 +249,9 @@ Claude Code's `{"skill": "<name>"}` spelling, still work as hidden aliases
 | `/skills` | List every skill: who can run it (`/name`, `/name only`, `agent only`, `disabled`), its family and scope, and its `SKILL.md` path; then shadowed skills and warnings. |
 | `/<name> [args]` | Run a skill. |
 | `/skill install <source> [--project] [--force] [--as=<name>] [--path=<sub>]` | Install from a local folder, an https git URL, or `owner/repo`. Goes to `~/.spettro/skills/<name>`, or `.spettro/skills/<name>` with `--project`. |
-| `/skill uninstall <name> [--project]` | Remove a skill installed in `.spettro/skills`. Skills in the Claude Code / Codex folders are never deleted by Spettro; disable them instead. |
+| `/skill uninstall <name> [--project]` | Remove a skill installed in `.spettro/skills`. Skills in the Claude Code / Codex folders are never deleted by Bulb; disable them instead. |
 | `/skill info <name>` | Metadata, bundled files, warnings and the start of the instructions. |
-| `/skill disable <name>` / `enable <name>` | Hide or show a skill everywhere. Stored in `~/.spettro/config.json` as `disabled_skills`, so nothing is written into the skill's folder. `enable` also deletes a `.spettro-disabled` file an older Spettro left in the skill's folder (in any family's folder: it is Spettro's own file). A skill whose `SKILL.md` says `disabled: true` stays off, and `enable` tells you to edit that file. |
+| `/skill disable <name>` / `enable <name>` | Hide or show a skill everywhere. Stored in `~/.spettro/config.json` as `disabled_skills`, so nothing is written into the skill's folder. `enable` also deletes a `.spettro-disabled` file an older Bulb left in the skill's folder (in any family's folder: it is Bulb's own file). A skill whose `SKILL.md` says `disabled: true` stays off, and `enable` tells you to edit that file. |
 | `/skill where` | The discovery folders for the current directory, in priority order. |
 | `/skill reload` | Force a re-scan of the skill folders; changes on disk are otherwise picked up by themselves (see below). |
 
@@ -269,7 +269,7 @@ and managing skills is TUI-only.
 The discovered skills are kept in memory, so the skill list in the system
 prompt is byte-identical on every request; providers cache the prompt
 prefix, and a list that changed between requests would throw that cache
-away. Before each use, Spettro checks the modification times of the skill
+away. Before each use, Bulb checks the modification times of the skill
 folders and of every `SKILL.md` it read (a handful of `stat` calls, no file
 reads), and rescans only when something changed. So a skill you add, edit
 or delete by hand shows up on the next message, in the TUI, in an ACP
@@ -291,7 +291,7 @@ Where the pieces live:
 | The `skill` tool and its aliases | `internal/agent/llm_runtime_skills.go`, `tool_aliases.go`; manifest fold in `internal/config/tool_consolidation.go` (v14) |
 | TUI: `/skill`, `/skills`, `/name`, `$name`, menu entries | `internal/tui/commands_skills.go`, `model_commands_catalog.go`, `input_mentions.go` |
 | ACP: advertised commands, `/name`, `/skills`, `$name` | `internal/acp/skills.go`, `bridge.go` (Prompt) |
-| Headless remote | `cmd/spettro/headless_skills.go` |
+| Headless remote | `cmd/bulb/headless_skills.go` |
 
 Invariants worth keeping:
 
@@ -302,9 +302,9 @@ Invariants worth keeping:
   tool, never on time or step, to keep the system prompt cacheable. The
   load tool comes from `toolRuntime.skillLoadTool`; an agent without one
   gets no list.
-- Spettro never writes into a root whose `Root.ReadOnly()` is true. The
+- Bulb never writes into a root whose `Root.ReadOnly()` is true. The
   one exception is `/skill enable` deleting a legacy `.spettro-disabled`
-  marker, which only an older Spettro could have put there.
+  marker, which only an older Bulb could have put there.
 - A skill never shadows a command: each host checks its own built-in names
   first (`builtinCommandNames` in the TUI, `acpReservedCommandNames` in ACP,
   `headlessCommandNames` for the remote). Adding a built-in command means

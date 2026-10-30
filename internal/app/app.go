@@ -1,6 +1,6 @@
 // Package app is the legacy line-oriented front-end behind internal/ui.
 //
-// Nothing in cmd/spettro constructs an App — the binary dispatches to `clean`,
+// Nothing in cmd/bulb constructs an App — the binary dispatches to `clean`,
 // -headless, -acp or the Bubble Tea TUI — so this package's only importer is
 // tests/app, which uses it to exercise the non-TUI command surface. Keep that
 // in mind before spending effort here: the palette seeding below and the

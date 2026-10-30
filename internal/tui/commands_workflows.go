@@ -26,7 +26,7 @@ const workflowsHelp = `workflow commands:
   /workflows where               show the directories scanned for saved workflows
 
 Workflows are JavaScript orchestration scripts the model writes for the task
-at hand. Spettro runs their phases, fan-outs and loops, and a script can adapt
+at hand. Bulb runs their phases, fan-outs and loops, and a script can adapt
 as it goes: plan its work-list at runtime, open phases nobody declared, or
 pause at a checkpoint() so the agent reads the interim results and decides
 the next step before the run continues.

@@ -1,6 +1,6 @@
 # Session Lifecycle
 
-Spettro saves your conversation history so you can pause and resume work, clear
+Bulb saves your conversation history so you can pause and resume work, clear
 context when it gets full, and pick up where you left off — even across TUI
 restarts.
 
@@ -9,7 +9,7 @@ resume, compaction, and the clear/compact distinction.
 
 ## Auto-save
 
-Spettro automatically saves the current session to disk as you work:
+Bulb automatically saves the current session to disk as you work:
 
 - **After every completed agent run** (when the assistant message is appended).
 - **Debounced during a run** — tool-stream updates and progress comments are
@@ -125,13 +125,13 @@ When a session is loaded:
 5. What belonged to the conversation you left is dropped: the context gauge
    starts from zero again, and a plan waiting for `/approve` is discarded.
 
-If the session had an **unfinished goal** in progress, Spettro remembers its
+If the session had an **unfinished goal** in progress, Bulb remembers its
 state (objective, iteration count, no-progress counter, elapsed time) and
 offers `/goal resume` after loading.
 
 ### Auto-resume on startup
 
-At startup, Spettro does not auto-resume — you always start with a fresh
+At startup, Bulb does not auto-resume — you always start with a fresh
 transcript. Use `/resume` explicitly to return to a previous session.
 
 ## Compact (`/compact`)
@@ -226,7 +226,7 @@ configured threshold:
 /compact auto status          # check current setting
 ```
 
-When enabled, Spettro compacts in two places:
+When enabled, Bulb compacts in two places:
 
 - **Between turns** (TUI and ACP): after an agent turn, if context occupancy
   is above the threshold percentage. This goes cheapest first like the run
@@ -327,7 +327,7 @@ one. The saved session is available via `/resume` later.
 ## Full lifecycle example
 
 ```
-1. Start Spettro         → fresh session
+1. Start Bulb         → fresh session
 2. Work for a while      → auto-save runs in background (debounced)
 3. Context is getting
    tight (yellow gauge)  → auto-compact when crossing 85%
@@ -351,7 +351,7 @@ There is no built-in session manager or retention policy yet.
 
 ## Background jobs
 
-Spettro tracks detached shell processes started by the agent with `run_in_background`
+Bulb tracks detached shell processes started by the agent with `run_in_background`
 (e.g., dev servers, watch builds, long-running scripts). Jobs are **process-wide**
 session state: they outlive individual agent turns and are killed when the session
 ends.
@@ -400,10 +400,10 @@ Terminates every running job at once.
   stdout/stderr, oldest bytes dropped when exceeded).
 - When the session ends (TUI exit, `/exit`), all remaining jobs are killed
   automatically.
-- When the terminal or tmux pane spettro runs in is closed (SIGHUP), spettro
+- When the terminal or tmux pane bulb runs in is closed (SIGHUP), bulb
   kills every foreground shell command, background job and PTY session before
   it exits. From that moment it also refuses to start new foreground shell
-  commands (they fail with "spettro is shutting down; command not started"), so
+  commands (they fail with "bulb is shutting down; command not started"), so
   an agent reacting to its killed command cannot leave a new one running.
   Under `nohup` the hangup
   is ignored and everything keeps running.

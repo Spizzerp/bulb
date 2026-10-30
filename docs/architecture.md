@@ -1,12 +1,12 @@
 # Architecture Overview
 
-Spettro is a Go application with a Bubble Tea TUI front-end and internal service packages.
+Bulb is a Go application with a Bubble Tea TUI front-end and internal service packages.
 
 ## Entry point and runtime
 
-- `cmd/spettro/main.go` initializes config, encrypted keys, provider manager, model catalog, manifest validation, and TUI.
+- `cmd/bulb/main.go` initializes config, encrypted keys, provider manager, model catalog, manifest validation, and TUI.
 - `internal/tui` is the active runtime: command dispatch, dialogs, rendering, approval flows, and agent execution.
-- Project manifest loading is handled by `internal/config` (`LoadAgentManifestForProject`). Every front-end loads it once, in `bootstrapSession` (`cmd/spettro/bootstrap.go`); the TUI host hands that copy to `tui.New` with `tui.WithManifest`, so the file is not parsed twice before the first frame.
+- Project manifest loading is handled by `internal/config` (`LoadAgentManifestForProject`). Every front-end loads it once, in `bootstrapSession` (`cmd/bulb/bootstrap.go`); the TUI host hands that copy to `tui.New` with `tui.WithManifest`, so the file is not parsed twice before the first frame.
 - Model lists that need the network (local endpoint probes, the Spettro Subscription list, the catalog refresh) arrive in the background (`startModelDiscovery`, `models.LoadAndRefresh`). Each change is applied to the provider manager first and then signalled on a one-slot channel (`modelsChangedSignal`); the TUI waits on it (`tui.WithModelUpdates`) and refreshes an open `/models` selector or onboarding picker, keeping the cursor on its model, and redraws the header. The idle TUI runs no timer, so without the signal a model that arrived in the background would appear only after the next keystroke.
 
 ## Core packages
@@ -21,7 +21,7 @@ Spettro is a Go application with a Bubble Tea TUI front-end and internal service
 - `internal/storage`: project/global `.spettro` directory setup.
 - `internal/hooks`: global/project hook loading, merge, and execution.
 - `internal/compact`: context usage policy and compaction guardrails.
-- `internal/workflow`: the [workflow](workflows.md) script engine — a goja JavaScript runtime with `agent`/`parallel`/`pipeline`/`phase`/`log`/`budget`/`size`/`checkpoint` globals and the `plan`/`untilDry` helpers, an event loop that resolves agent promises from goroutines, a run handle that can pause a run at a checkpoint and resume it from a later tool call, meta-header parsing and `params` checking, structured-output validation, and the journal (agent calls and checkpoint answers) that makes a run resumable. It knows nothing about Spettro's agents: sub-agent execution arrives through a `Runner` interface (implemented in `internal/agent/workflow.go`) and progress leaves through an `Observer`, so the engine is testable without a provider. The registry of runs paused at a checkpoint lives with the agent glue (`internal/agent/workflow_live.go`), owned by the host session.
+- `internal/workflow`: the [workflow](workflows.md) script engine — a goja JavaScript runtime with `agent`/`parallel`/`pipeline`/`phase`/`log`/`budget`/`size`/`checkpoint` globals and the `plan`/`untilDry` helpers, an event loop that resolves agent promises from goroutines, a run handle that can pause a run at a checkpoint and resume it from a later tool call, meta-header parsing and `params` checking, structured-output validation, and the journal (agent calls and checkpoint answers) that makes a run resumable. It knows nothing about Bulb's agents: sub-agent execution arrives through a `Runner` interface (implemented in `internal/agent/workflow.go`) and progress leaves through an `Observer`, so the engine is testable without a provider. The registry of runs paused at a checkpoint lives with the agent glue (`internal/agent/workflow_live.go`), owned by the host session.
 - `internal/skills`: Agent Skills discovery, parsing, install/uninstall, prompt rendering, argument substitution and `$name` mentions, plus the catalog cache, which rescans only when a skill folder or `SKILL.md` changed on disk. Discovers `SKILL.md` packs from `.spettro/skills/` (project, walking up to the repository root, and `~`) and, read-only, from the Claude Code and Codex folders (`.agents`, `.claude`, `.codex`, `.openai`) so their skills work without conversion. Hosts get the catalog through `agent.SkillCatalogFor`. See [skills.md](skills.md).
 - `internal/testhome` (tests only): keeps test binaries off the real `~/.spettro` (config, keys, Telegram settings, `lsp.json`). A package whose tests can reach per-user files calls `os.Exit(testhome.Main(m))` from `TestMain`: HOME, USERPROFILE and the XDG/AppData directories point at a temporary directory and SUDO_USER is cleared, while GOENV, GOCACHE, GOPATH, GOMODCACHE and GOPLSCACHE stay on their real locations. Optional setup functions passed to `Main` prepare the temporary home before the tests run. The package carries a `TestHomeIsIsolated` test calling `testhome.Check`, which fails when that isolation is missing. A test that writes to the home (an `lsp.json`, a config) should still `t.Setenv("HOME", t.TempDir())`: the temporary home is shared by the whole test binary. `TestEveryTestPackageIsolatesHome` (in `internal/testhome`) walks the module and fails for any test package that neither calls `testhome.Main` with the `testhome.Check` guard nor appears in its short `pureTestPackages` list of packages that cannot reach per-user files (no home, config or storage dependency and no child processes), so a new test package cannot forget the isolation.
 
@@ -71,10 +71,9 @@ does not grow with the length of the session:
   redraws the chrome parts that animate, such as a glaring task). The frame
   is joined from rows measured once.
 - **Idle**. The 60 Hz animation tick runs only while something animates
-  (the startup eyes intro, a run, onboarding and sign-in spinners, the MAX
+  (a run, onboarding and sign-in spinners, the MAX
   plan label, a goal's clock, running delegations, in-progress tasks, glowing
-  input keywords); the idle eyes blink runs on its own slow tick chain until
-  the first user message; a 1 s
+  input keywords; the wordmark logo is static); a 1 s
   clock tick redraws the status bar while a `/loop` counts down or a
   background job or pty session runs (either can end with no message
   reaching the TUI); banners clear with a one-shot timer; the input cursor
@@ -95,7 +94,7 @@ does not grow with the length of the session:
 
 ## Agent manifest
 
-Spettro loads `spettro.agents.toml` from project root when present; otherwise it uses built-ins.
+Bulb loads `spettro.agents.toml` from project root when present; otherwise it uses built-ins.
 
 See [AGENTS.md](../AGENTS.md) for schema details (`version = 14`, `[runtime]`, `[[tools]]`, `[[agents]]`, permissions, validation, and the migrations that bring an older manifest up to date).
 
@@ -109,7 +108,7 @@ See [AGENTS.md](../AGENTS.md) for schema details (`version = 14`, `[runtime]`, `
 
 ## Orchestration contract (orchestrators vs workers)
 
-Spettro deliberately splits the agent roster into **orchestrators** (`plan`, `coding`, `ask`) and **workers** (`explore`, `code`, `git`, `test`, `review`, `docs`, `general-purpose`). The orchestration contract is:
+Bulb deliberately splits the agent roster into **orchestrators** (`plan`, `coding`, `ask`) and **workers** (`explore`, `code`, `git`, `test`, `review`, `docs`, `general-purpose`). The orchestration contract is:
 
 - Orchestrators are coordinators. They decompose the user's request and spawn workers via the `agent` tool, preferring parallel batches (the runtime allows up to 4 concurrent sub-agents per step). Their prompts in `agents/planning.md`, `agents/coding.md`, and `agents/chat.md` enforce "delegate first".
 - `plan` is enforced at the manifest level: it has **no** direct read tools (`glob`/`grep`/`file-read`). Discovery must go through an `explore` worker. The corresponding contract tests live in `tests/config/manifest_test.go`.
@@ -121,9 +120,9 @@ Spettro deliberately splits the agent roster into **orchestrators** (`plan`, `co
 
 ## Provider abstraction
 
-- Streamed requests to OpenAI-compatible chat-completions endpoints (catalog providers with an OpenAI-style API, the Spettro Subscription, local servers) go through Spettro's own client in `internal/provider/wire/chatcompletions` (encoder, SSE reader, chunk decoder, tool-argument tracker) driven by `internal/provider/native*.go`. It sends the same request JSON as fantasy (pinned by golden tests) but caches each message's encoding across the steps of a run, so a step re-encodes only what it added (one cache lane per conversation, so the main agent and up to 47 concurrent sub-agents each keep theirs; 8 MB in all; a request of a single message, such as a compaction summary, takes no lane; a lane unused for 5 minutes is released; images go into the body straight from the media cache without being copied), and it decodes streamed tool-call arguments in linear time. `"provider_wire": "fantasy"` in `config.json` or `SPETTRO_PROVIDER_WIRE=fantasy` switches back; an encoder failure falls back to fantasy on its own.
+- Streamed requests to OpenAI-compatible chat-completions endpoints (catalog providers with an OpenAI-style API, the Spettro Subscription, local servers) go through Bulb's own client in `internal/provider/wire/chatcompletions` (encoder, SSE reader, chunk decoder, tool-argument tracker) driven by `internal/provider/native*.go`. It sends the same request JSON as fantasy (pinned by golden tests) but caches each message's encoding across the steps of a run, so a step re-encodes only what it added (one cache lane per conversation, so the main agent and up to 47 concurrent sub-agents each keep theirs; 8 MB in all; a request of a single message, such as a compaction summary, takes no lane; a lane unused for 5 minutes is released; images go into the body straight from the media cache without being copied), and it decodes streamed tool-call arguments in linear time. `"provider_wire": "fantasy"` in `config.json` or `SPETTRO_PROVIDER_WIRE=fantasy` switches back; an encoder failure falls back to fantasy on its own.
 - Everything else (Anthropic-protocol providers, the official `openai` provider, non-streamed requests) routes through Charm's `fantasy` SDK. Both streaming paths feed the same collector (`stream_collect.go`), so replies, finish reasons, usage and errors come out identical, apart from the few malformed replies the native client accepts where fantasy fails (listed under [Provider wire](configuration.md#provider-wire)).
-- Legacy completion-only backends fall back to Spettro's direct SDK adapters, which use the same OpenAI and Anthropic SDK copies fantasy links.
+- Legacy completion-only backends fall back to Bulb's direct SDK adapters, which use the same OpenAI and Anthropic SDK copies fantasy links.
 - Per-request model metadata (vision, tool calling, context window, output limit) comes from an index rebuilt whenever a model list changes (`Manager.Lookup`), and attached images and tool schemas are cached across requests (`request_cache.go`; images up to 6 MB, each kept only in the forms requests used and released after 5 minutes without use).
 - Known provider base URLs and local endpoints still resolve through the same manager layer.
 - Catalog-backed model lists are preferred; fallback models are used when catalog is unavailable.

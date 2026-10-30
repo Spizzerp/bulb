@@ -47,7 +47,7 @@ func FetchLatestRelease(ctx context.Context) (*Release, error) {
 		return nil, err
 	}
 	req.Header.Set("Accept", "application/vnd.github+json")
-	req.Header.Set("User-Agent", "spettro-cli")
+	req.Header.Set("User-Agent", "bulb-cli")
 
 	resp, err := httpClient().Do(req)
 	if err != nil {

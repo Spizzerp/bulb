@@ -1,6 +1,6 @@
 # First-Launch Onboarding
 
-When Spettro starts with **no provider API keys configured** and **no local
+When Bulb starts with **no provider API keys configured** and **no local
 endpoints**, it presents a guided onboarding wizard so you can get connected
 and start using the tool immediately — no config file editing required.
 
@@ -11,7 +11,7 @@ dismiss it manually.
 
 Onboarding triggers when **all** of these are true:
 
-- No Spettro Subscription is signed in (`spettro` provider key is empty).
+- No Spettro Subscription is signed in (`bulb` provider key is empty).
 - No provider API keys are stored (Anthropic, OpenAI, etc. are empty).
 - No local endpoints are configured.
 - No cached model catalog is available.
@@ -41,10 +41,10 @@ normal TUI starts immediately.
 - Use `↑` / `↓` to navigate; when the list scrolls, `↑ N more` / `↓ N more`
   rows say how much is above and below it.
 - Press `Enter` to select.
-- Press `Esc` to quit spettro without choosing (the key hint under the list
+- Press `Esc` to quit bulb without choosing (the key hint under the list
   says so).
 
-At the top of the list you will also see **Sign in to your Spettro
+At the top of the list you will also see **Sign in to your Bulb
 subscription** — selecting this starts the device-flow login instead of asking
 for an API key (see [Subscription](subscription.md)).
 
@@ -102,7 +102,7 @@ Press `Enter` or `Esc` to return to the key entry and correct the value.
 
 ## Dismissing onboarding
 
-You can **always** quit Spettro during onboarding with `Ctrl+C`. On the
+You can **always** quit Bulb during onboarding with `Ctrl+C`. On the
 provider picker screen, `Ctrl+C` quits. On the key entry screen, `Ctrl+C`
 also quits.
 

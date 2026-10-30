@@ -9,12 +9,12 @@ come from a separate pass of five runs under /usr/bin/time (-l on macOS, -v
 on Linux), so the wrapper does not inflate the wall numbers.
 
 The commands run with HOME, USERPROFILE and the XDG directories in an empty
-temporary directory, so a spettro binary under test never reads or writes
+temporary directory, so a bulb binary under test never reads or writes
 the real ~/.spettro. Prints min / median / p95 per label and the 1-minute
 load average.
 
 Example, comparing two builds:
-  scripts/perf/procab.py base='/tmp/spettro-base --help' now='bin/spettro --help'
+  scripts/perf/procab.py base='/tmp/bulb-base --help' now='bin/bulb --help'
 """
 import argparse, os, platform, re, shlex, shutil, statistics, subprocess, tempfile, time
 

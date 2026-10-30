@@ -17,7 +17,7 @@ var eagerInitPackages = []string{
 }
 
 // TestDarwinBinaryHasNoEagerNativeLoads is a work-count guard: the darwin
-// build of cmd/spettro must not link a package that dlopens a system
+// build of cmd/bulb must not link a package that dlopens a system
 // framework at init. internal/clipboard loads AppKit on first paste instead.
 func TestDarwinBinaryHasNoEagerNativeLoads(t *testing.T) {
 	if testing.Short() {

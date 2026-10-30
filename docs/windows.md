@@ -1,6 +1,6 @@
 # Windows
 
-Spettro runs natively on Windows (amd64 and arm64). Everything documented
+Bulb runs natively on Windows (amd64 and arm64). Everything documented
 elsewhere works the same way unless it is listed here.
 
 ## Install
@@ -11,7 +11,7 @@ irm https://raw.githubusercontent.com/aploide/spettro/main/install.ps1 | iex
 
 The installer verifies the release archive's SHA-256 against the release's
 `checksums.txt` and refuses to install if it does not match. It writes to
-`%LOCALAPPDATA%\Programs\spettro`, which needs no elevation — so the in-place
+`%LOCALAPPDATA%\Programs\bulb`, which needs no elevation — so the in-place
 self-update (`/update`) does not need it either.
 
 | Flag | Effect |
@@ -26,10 +26,10 @@ and has nowhere to put arguments:
 
 ```powershell
 irm https://raw.githubusercontent.com/aploide/spettro/main/install.ps1 -OutFile install.ps1
-.\install.ps1 -InstallDir D:\tools\spettro -Version v1.2.3
+.\install.ps1 -InstallDir D:\tools\bulb -Version v1.2.3
 ```
 
-Re-running the installer over a **running** spettro works: Windows will not let
+Re-running the installer over a **running** bulb works: Windows will not let
 an executing image be overwritten, but it does allow it to be renamed, so the
 current build is moved aside and deleted on the next run. `/update` uses the
 same mechanism.
@@ -66,7 +66,7 @@ picture before relying on it.
 
 ## Notifications
 
-Desktop notifications are delivered as Windows toasts. Because spettro is a
+Desktop notifications are delivered as Windows toasts. Because bulb is a
 portable console binary with no installer to register an Application User Model
 ID, the toast is published under the built-in Windows PowerShell AppID — so the
 banner is attributed to PowerShell. Notifications must be enabled for
@@ -92,9 +92,9 @@ the guarantee is expressed directly instead.
 ## Building from source
 
 ```powershell
-go build ./cmd/spettro
+go build ./cmd/bulb
 ```
 
-`make build` also works under Git Bash or MSYS2 and produces `bin/spettro.exe`,
+`make build` also works under Git Bash or MSYS2 and produces `bin/bulb.exe`,
 built like a release (`-trimpath`, `-ldflags "-s -w"`, a much smaller
 binary). `make size` prints the size and the number of linked packages.

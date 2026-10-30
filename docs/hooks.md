@@ -220,7 +220,7 @@ File: `.spettro/hooks.json` (project-scoped)
       "id": "log-file-edit",
       "event": "PostToolUse",
       "matcher": "file-write",
-      "command": "read input; echo \"$input\" | jq -r '.tool_args.path' >> /tmp/spettro-edits.log; echo '{\"decision\":\"allow\"}'"
+      "command": "read input; echo \"$input\" | jq -r '.tool_args.path' >> /tmp/bulb-edits.log; echo '{\"decision\":\"allow\"}'"
     }
   ]
 }
@@ -255,7 +255,7 @@ File: `.spettro/hooks.json` (project-scoped)
 
 ## Security notes
 
-- Hook commands run as the same user as Spettro, with the same privileges.
+- Hook commands run as the same user as Bulb, with the same privileges.
 - They are **not** confined by the OS sandbox, even when `--sandbox` is active.
 - Do not read untrusted input into `eval` or dynamic `source` inside hooks.
 - Hooks in project `.spettro/hooks.json` are checked into version control —

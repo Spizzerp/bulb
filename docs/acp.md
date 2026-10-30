@@ -1,17 +1,17 @@
 # Agent Client Protocol (ACP)
 
-Spettro can run as an [Agent Client Protocol](https://agentclientprotocol.com)
+Bulb can run as an [Agent Client Protocol](https://agentclientprotocol.com)
 agent, so ACP-capable editors (Zed, Neovim plugins, JetBrains, ...) can drive
 it as an external coding agent inside their native agent UI.
 
 ## Running
 
 ```bash
-spettro --acp
+bulb --acp
 ```
 
 The process speaks JSON-RPC over stdio: stdout carries protocol messages,
-stderr carries diagnostics. There is nothing to configure on the Spettro
+stderr carries diagnostics. There is nothing to configure on the Bulb
 side — the ACP agent reuses your existing configuration (active
 provider/model, API keys, permission level, agent manifest, sandbox
 settings).
@@ -25,19 +25,19 @@ them, and models that arrive later are sent to every open session as a
 The sandbox flags work as in the other modes:
 
 ```bash
-spettro --acp --sandbox workspace-write --sandbox-net localhost
+bulb --acp --sandbox workspace-write --sandbox-net localhost
 ```
 
 ## Editor setup
 
 ### Zed
 
-Add Spettro as a custom agent in `settings.json`:
+Add Bulb as a custom agent in `settings.json`:
 
 ```json
 {
   "agent_servers": {
-    "Spettro": {
+    "Bulb": {
       "command": "spettro",
       "args": ["--acp"]
     }
@@ -45,7 +45,7 @@ Add Spettro as a custom agent in `settings.json`:
 }
 ```
 
-Then open the Agent Panel and pick *Spettro* as the agent.
+Then open the Agent Panel and pick *Bulb* as the agent.
 
 ## What is exposed
 
@@ -61,7 +61,7 @@ Then open the Agent Panel and pick *Spettro* as the agent.
   shared, so changing one from any session sends a `config_option_update`
   to every other open session and a run in progress there applies a new
   permission level at its next approval.
-- **Toolbar selectors** — Spettro advertises ACP *session config options* so
+- **Toolbar selectors** — Bulb advertises ACP *session config options* so
   the editor draws native selectors in its message toolbar:
   - **Mode** — the orchestrator agents from the [manifest](../AGENTS.md)
     (`plan`, `coding`, `ask`); worker/subagent roles are internal delegation
@@ -107,7 +107,7 @@ Then open the Agent Panel and pick *Spettro* as the agent.
   card with a kind, a readable title, absolute file locations, its output,
   and a real diff for file changes.
 - **Token usage** — after every LLM request inside a turn (not just at the
-  end), Spettro sends a `usage_update` session notification with the current
+  end), Bulb sends a `usage_update` session notification with the current
   context occupancy (`used`) against the model's context window (`size`), so
   editors that support it render a live context gauge while the agent is
   still working. The cumulative turn cost travels in `_meta`
@@ -240,7 +240,7 @@ Then open the Agent Panel and pick *Spettro* as the agent.
   `session/list` and `session/close` are fully supported (the agent
   advertises `LoadSession: true`, plus `SessionCapabilities.List`,
   `SessionCapabilities.Resume` and `SessionCapabilities.Close` at
-  `initialize`). They are backed by Spettro's on-disk session store, so
+  `initialize`). They are backed by Bulb's on-disk session store, so
   conversations started in either the TUI or the ACP client are visible to
   both:
   - `session/load` — restores the stored session under its original ID and
@@ -267,7 +267,7 @@ Then open the Agent Panel and pick *Spettro* as the agent.
   Sessions persist automatically after every prompt turn, so the editor's
   session picker stays current without any explicit save action. MCP
   servers provided by the editor in `session/new` are still ignored;
-  Spettro's own MCP configuration applies as usual.
+  Bulb's own MCP configuration applies as usual.
 
 ## Tool calls
 
@@ -279,7 +279,7 @@ they started. A call rejected before it could run (arguments of a retired
 tool name that do not convert) arrives as a single, already finished
 `tool_call`.
 
-| Field | What Spettro sends |
+| Field | What Bulb sends |
 |---|---|
 | `kind` | From the tool's canonical name, so a retired name gets its canonical tool's kind: `read` for `file-read`, `view-image`, `skill`, `job-output`, `tool-output` and the MCP resource tools; `edit` for `file-write`, `file-edit`, `rename-symbol`; `search` for `grep`, `glob`, `lsp`, `tool-search`; `execute` for `bash`, `job-kill` and the `pty-*` tools; `fetch` for `web-fetch`, `web-search`, `download`; `think` for `todo-write`, `agent`, `workflow`, `goal-complete`; `switch_mode` for `enter-plan-mode` and `exit-plan-mode`; `other` for the rest. A tool that is not a built-in (MCP, or a tool of your own in the manifest, even one with a built-in's name) is classified from the words in its name. |
 | `title` | A sentence for the built-ins (`Run go test ./...`, `Edit internal/app.go`, `Search TODO in internal`, `Load skill greet`), read from the argument names the runtime accepts (`command` or `cmd`; `path` or `file_path`), `<name> <arguments>` for other tools (a tool of your own in the manifest included, even when it has a built-in's name), with the arguments clipped and redacted as in `rawInput`, `agent <id>: <task>` for a sub-agent. A workflow member's calls are prefixed with its instance (`[code#3] Read a.go`). One line, at most 120 characters. |
@@ -306,7 +306,7 @@ earlier turn showed, and the finish, including a close sent outside any turn —
 carries the card's state in `_meta["spettro.app/workflow"]`. It is built from
 the same state as the card's text, so the two always agree; the text is
 unchanged for clients that only read it. A client detects the metadata by its
-presence (an older Spettro does not send it) and needs no new extension
+presence (an older Bulb does not send it) and needs no new extension
 version for it.
 
 ```json
@@ -341,7 +341,7 @@ version for it.
 | `version` | The payload's own version, `1`. It changes only for a change an older reader would misread. |
 | `runId`, `name`, `description` | The run's ID (empty for a run that has none; its card ID is then `wf-N`), the workflow's name and its description. |
 | `size`, `sizeAgents`, `budgetTokens` | The [size tier](workflows.md#sizing), its agent guideline (`0` for none) and the token budget (`0` for none). |
-| `status` | `running`, `paused`, `stopped`, `success`, `failed` or `cancelled`. A status Spettro does not know passes through as it came, on a card that stays `in_progress`: treat any other value as an open run. |
+| `status` | `running`, `paused`, `stopped`, `success`, `failed` or `cancelled`. A status Bulb does not know passes through as it came, on a card that stays `in_progress`: treat any other value as an open run. |
 | `pausedAt` | Only while paused: the checkpoint the run waits at and its message. |
 | `stoppedReason` | Only when stopped: why (the orchestrator's stop, the idle limit, `/clear`, the session closing). |
 | `attach` | Which card of the run this is: `1` for the card that opened it, `2` for the card a later turn opened to continue it, and so on. |
@@ -407,7 +407,7 @@ The request carries:
   a line saying so and the list of those commands, one per line;
 - options `allow-once` ("Allow once"), `allow-always` and `deny` ("Deny").
   `allow-always` is offered only for commands and network targets, the
-  approvals Spettro remembers (in the project's allowed-commands and
+  approvals Bulb remembers (in the project's allowed-commands and
   allowed-network lists); a file write is asked about every time, so it is
   not offered there. What is remembered is the exact target, so the label
   names it: "Always allow this command" (or "Always allow the N commands
@@ -425,7 +425,7 @@ answer.
 
 A permission prompt is bound to the tool's own time limit (`timeout_sec` in
 the manifest: 120 s for `bash`, 60 s for `file-write`/`file-edit`). If it is
-still unanswered then, Spettro withdraws it with `$/cancel_request` and the
+still unanswered then, Bulb withdraws it with `$/cancel_request` and the
 call fails without running, telling the model nobody approved it in time;
 `session/cancel` withdraws it the same way. Nothing waits on the editor
 forever.
@@ -439,7 +439,7 @@ free-text answer. It is available to the agents you converse with directly
 a question.
 
 The model asks a *form*: up to four related questions put to you together. Core
-ACP has no question primitive, so Spettro offers the same payload over several
+ACP has no question primitive, so Bulb offers the same payload over several
 transports and takes the best one the client supports — the first two carry the
 whole form, the rest carry one question at a time.
 
@@ -482,7 +482,7 @@ never returned as if a human had chosen it.
 
 ### Handshake
 
-Spettro advertises its extension surface in the `initialize` response
+Bulb advertises its extension surface in the `initialize` response
 `_meta["spettro.app/extensions"]`:
 
 ```json
@@ -530,7 +530,7 @@ still renders something answerable:
       "question": "Which database?",
       "options": [
         { "id": "opt-0", "label": "Postgres", "description": "already provisioned" },
-        { "id": "opt-1", "label": "SQLite", "isRecommended": true, "preview": "file: ./spettro.db" }
+        { "id": "opt-1", "label": "SQLite", "isRecommended": true, "preview": "file: ./bulb.db" }
       ],
       "multiSelect": false,
       "allowCustomInput": true
@@ -610,7 +610,7 @@ tell the model that nobody answered.
 
 Core ACP can carry a workflow *run*, which arrives as tool calls like
 any other work. It has no vocabulary for writing a workflow, keeping it
-and running it again later. Spettro serves these extension methods
+and running it again later. Bulb serves these extension methods
 (listed in the [handshake](#handshake)) so an editor can manage saved
 [workflows](workflows.md) without a model turn. They work on the same
 `.spettro/workflows` and `~/.spettro/workflows` folders as the TUI's

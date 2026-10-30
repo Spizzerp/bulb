@@ -69,7 +69,7 @@ func (b *bridge) announceCommands(ctx context.Context, sid acpsdk.SessionId) {
 
 // handleSlashCommand executes the ACP-safe subset of Spettro's slash
 // commands (see acpAvailableCommands) directly against cfg/session state,
-// mirroring internal/tui/model.go's handleCommand and cmd/spettro/headless.go's
+// mirroring internal/tui/model.go's handleCommand and cmd/bulb/headless.go's
 // handleHeadlessCommand: ACP has no dialog surface, so these must resolve in
 // one turn from plain text. handled=false means the input isn't one of ours
 // and should fall through to the LLM as an ordinary prompt. /goal is NOT

@@ -63,7 +63,7 @@ pty-kill  {"id": "pty-1"}                          (or rely on session cleanup)
 ## Lifecycle
 
 - Sessions are session state: they survive between agent turns and are all
-  killed when spettro exits in any mode: TUI quit, `--goal` run end, the
+  killed when bulb exits in any mode: TUI quit, `--goal` run end, the
   editor closing an `--acp` connection, or the `--headless` server stopping
   (background shell jobs and still-running commands too).
 - The status bar shows `▣ N pty` while sessions are live.

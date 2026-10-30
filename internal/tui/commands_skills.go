@@ -258,7 +258,7 @@ func (m Model) runSkillsUninstall(args []string) (tea.Model, tea.Cmd) {
 		msg := "uninstall failed: " + err.Error()
 		if s, ok := m.skillCatalog().Find(name); ok && s.Source != skills.SourceSpettro {
 			// Spettro never writes to another tool's skill folder.
-			msg = fmt.Sprintf("%q lives in %s, which Spettro only reads; remove it there, or /skill disable %s", s.Name, s.Directory, s.Name)
+			msg = fmt.Sprintf("%q lives in %s, which Bulb only reads; remove it there, or /skill disable %s", s.Name, s.Directory, s.Name)
 		}
 		m.showBanner(msg, "error")
 		return m, nil

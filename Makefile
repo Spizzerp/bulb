@@ -1,4 +1,4 @@
-APP=spettro
+APP=bulb
 VERSION ?= dev
 # Every packaged binary is built with GOFLAGS_RELEASE and LDFLAGS: -trimpath
 # drops local paths, -s -w drop the symbol table and DWARF data (79 MB to
@@ -22,27 +22,27 @@ bench:
 	go test -bench=. -run=^$$ ./internal/budget
 
 build:
-	go build $(GOFLAGS_RELEASE) -ldflags="$(LDFLAGS)" -o bin/$(APP)$(EXE) ./cmd/spettro
+	go build $(GOFLAGS_RELEASE) -ldflags="$(LDFLAGS)" -o bin/$(APP)$(EXE) ./cmd/bulb
 
 build-all:
-	CGO_ENABLED=0 GOOS=linux   GOARCH=amd64 go build $(GOFLAGS_RELEASE) -ldflags="$(LDFLAGS)" -o bin/$(APP)-linux-amd64 ./cmd/spettro
-	CGO_ENABLED=0 GOOS=linux   GOARCH=arm64 go build $(GOFLAGS_RELEASE) -ldflags="$(LDFLAGS)" -o bin/$(APP)-linux-arm64 ./cmd/spettro
-	CGO_ENABLED=0 GOOS=darwin  GOARCH=amd64 go build $(GOFLAGS_RELEASE) -ldflags="$(LDFLAGS)" -o bin/$(APP)-darwin-amd64 ./cmd/spettro
-	CGO_ENABLED=0 GOOS=darwin  GOARCH=arm64 go build $(GOFLAGS_RELEASE) -ldflags="$(LDFLAGS)" -o bin/$(APP)-darwin-arm64 ./cmd/spettro
-	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build $(GOFLAGS_RELEASE) -ldflags="$(LDFLAGS)" -o bin/$(APP)-windows-amd64.exe ./cmd/spettro
-	CGO_ENABLED=0 GOOS=windows GOARCH=arm64 go build $(GOFLAGS_RELEASE) -ldflags="$(LDFLAGS)" -o bin/$(APP)-windows-arm64.exe ./cmd/spettro
+	CGO_ENABLED=0 GOOS=linux   GOARCH=amd64 go build $(GOFLAGS_RELEASE) -ldflags="$(LDFLAGS)" -o bin/$(APP)-linux-amd64 ./cmd/bulb
+	CGO_ENABLED=0 GOOS=linux   GOARCH=arm64 go build $(GOFLAGS_RELEASE) -ldflags="$(LDFLAGS)" -o bin/$(APP)-linux-arm64 ./cmd/bulb
+	CGO_ENABLED=0 GOOS=darwin  GOARCH=amd64 go build $(GOFLAGS_RELEASE) -ldflags="$(LDFLAGS)" -o bin/$(APP)-darwin-amd64 ./cmd/bulb
+	CGO_ENABLED=0 GOOS=darwin  GOARCH=arm64 go build $(GOFLAGS_RELEASE) -ldflags="$(LDFLAGS)" -o bin/$(APP)-darwin-arm64 ./cmd/bulb
+	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build $(GOFLAGS_RELEASE) -ldflags="$(LDFLAGS)" -o bin/$(APP)-windows-amd64.exe ./cmd/bulb
+	CGO_ENABLED=0 GOOS=windows GOARCH=arm64 go build $(GOFLAGS_RELEASE) -ldflags="$(LDFLAGS)" -o bin/$(APP)-windows-arm64.exe ./cmd/bulb
 
 # release-binary builds one packaged binary for the release workflow, which
 # sets GOOS, GOARCH and CGO_ENABLED in the environment and names the output:
-#   make release-binary VERSION=v1.2.3 OUT=spettro.exe
+#   make release-binary VERSION=v1.2.3 OUT=bulb.exe
 release-binary:
-	go build $(GOFLAGS_RELEASE) -ldflags="$(LDFLAGS)" -o $(OUT) ./cmd/spettro
+	go build $(GOFLAGS_RELEASE) -ldflags="$(LDFLAGS)" -o $(OUT) ./cmd/bulb
 
 # size prints the release binary's size and the number of packages linked
 # into it, so a dependency that bloats either shows up in review.
 size: build
 	@wc -c < bin/$(APP)$(EXE) | awk '{ printf "binary:   %.1f MB (%d bytes)\n", $$1 / 1048576, $$1 }'
-	@go list -deps ./cmd/spettro | wc -l | awk '{ printf "packages: %d\n", $$1 }'
+	@go list -deps ./cmd/bulb | wc -l | awk '{ printf "packages: %d\n", $$1 }'
 
 INSTALL_DIR ?= $(HOME)/.local/bin
 

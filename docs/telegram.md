@@ -1,6 +1,6 @@
 # Telegram relay (`/telegram` / `/tg`)
 
-Spettro can drive a session from a Telegram chat: send prompts from your
+Bulb can drive a session from a Telegram chat: send prompts from your
 phone, receive live agent output, answer ask-user questions and interrupt
 runs without sitting in front of the TUI.
 
@@ -14,11 +14,11 @@ plain JSON under `~/.spettro/telegram.json`.
 1. Talk to [@BotFather](https://t.me/BotFather) on Telegram and create
    a new bot. BotFather replies with an API token like
    `123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11`.
-2. In Spettro, run:
+2. In Bulb, run:
    ```
    /telegram setup 123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11
    ```
-   Spettro validates the token (`getMe`), saves it encrypted and prints
+   Bulb validates the token (`getMe`), saves it encrypted and prints
    the bot's `@username`.
 3. Authorize yourself — pick whichever you prefer:
    ```
@@ -34,13 +34,13 @@ plain JSON under `~/.spettro/telegram.json`.
    The relay forwards it to the active agent and echoes the assistant's
    reply back to the chat.
 
-On the next launch, Spettro autostarts the relay because `/telegram start`
+On the next launch, Bulb autostarts the relay because `/telegram start`
 flips an `auto_start` flag in `~/.spettro/telegram.json`. Disable it with
 `/telegram stop`.
 
 ## Command reference
 
-### From the Spettro TUI
+### From the Bulb TUI
 
 | Command | Behavior |
 | --- | --- |
@@ -72,18 +72,18 @@ When messaging the bot:
 | Message | Effect |
 | --- | --- |
 | Plain text (no leading `/`) | Treated as a new prompt for the active agent. |
-| `/plan ...`, `/approve`, `/models ...`, etc. | Treated as a Spettro slash command (subject to the usual "not while thinking" rules). |
-| Plain text **while Spettro is awaiting an ask-user answer** | Routed as the answer to the question currently on screen. Spettro confirms in the TUI. When the agent asked several questions at once, the chat is told which one it is looking at (`question 2 of 3`), the next unanswered one is sent after each reply, and the form is submitted after the last. |
+| `/plan ...`, `/approve`, `/models ...`, etc. | Treated as a Bulb slash command (subject to the usual "not while thinking" rules). |
+| Plain text **while Bulb is awaiting an ask-user answer** | Routed as the answer to the question currently on screen. Bulb confirms in the TUI. When the agent asked several questions at once, the chat is told which one it is looking at (`question 2 of 3`), the next unanswered one is sent after each reply, and the form is submitted after the last. |
 | `/cancel` (or `/stop`) | Interrupt the currently running agent (equivalent to pressing Esc). |
 | `/whoami` | Print the bot's identity and allowlist size. |
 | `/help`, `/start` | Print the bot-side cheat sheet. |
 
 Bot-side commands like `/cancel` and `/help` are handled by the relay
-itself — they never reach Spettro's agent loop.
+itself — they never reach Bulb's agent loop.
 
 ## What gets forwarded
 
-The relay forwards a curated subset of Spettro's internal event stream so
+The relay forwards a curated subset of Bulb's internal event stream so
 the chat stays useful rather than noisy:
 
 | Forwarded | Emoji / prefix |
@@ -168,7 +168,7 @@ replay messages you already processed.
 | Symptom | Likely cause |
 | --- | --- |
 | `telegram: token rejected — 401 Unauthorized` | Wrong / revoked BotFather token. Recreate with `@BotFather` and rerun `/telegram setup`. |
-| `🚫 This chat is not allowed to drive Spettro.` (in Telegram) | The sender's username/id is not on the allowlist. Run `/telegram allow ...` in the TUI. |
+| `🚫 This chat is not allowed to drive Bulb.` (in Telegram) | The sender's username/id is not on the allowlist. Run `/telegram allow ...` in the TUI. |
 | Messages go in but no reply | Check `/telegram status` for `last error` / `last send`. The relay may be backing off after a transient API failure. |
 | `telegram autostart failed: ...` on launch | Network down or token revoked. Run `/telegram start` manually once the issue is resolved. |
 | Bot replies are arriving in the wrong chat | Multiple chats messaged the bot during the same session. The relay broadcasts to every bound chat; remove unwanted entries from the allowlist or `/telegram restart`. |

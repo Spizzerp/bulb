@@ -26,9 +26,9 @@ func (m *Model) maybeNotify(runErr error) {
 		return
 	}
 	if runErr != nil {
-		m.notifier.Notify("Spettro", "Agent finished with an error")
+		m.notifier.Notify("Bulb", "Agent finished with an error")
 	} else {
-		m.notifier.Notify("Spettro", "Agent finished")
+		m.notifier.Notify("Bulb", "Agent finished")
 	}
 }
 
@@ -38,7 +38,7 @@ func (m *Model) notifyIfUnfocused(body string) {
 	if m.terminalFocused {
 		return
 	}
-	m.notifier.Notify("Spettro", body)
+	m.notifier.Notify("Bulb", body)
 }
 
 // ---------------------------------------------------------------------------

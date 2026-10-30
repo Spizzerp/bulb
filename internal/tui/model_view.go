@@ -135,7 +135,7 @@ func diagFillTitle(label string, innerWidth int) string {
 
 func (m Model) viewHeader() string {
 	mc := m.currentColor()
-	logo := lipgloss.NewStyle().Bold(true).Foreground(mc).Render("◈ spettro " + version.App)
+	logo := lipgloss.NewStyle().Bold(true).Foreground(mc).Render("✿ bulb " + version.App)
 	if planName := m.spettroPlanName(); planName != "" {
 		sep := lipgloss.NewStyle().Bold(true).Foreground(mc).Render(" - ")
 		logo += sep + renderPlanLabel(planName, m.eyeFrame)

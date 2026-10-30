@@ -1,6 +1,6 @@
 # Clipboard, Attachments, and Media
 
-Spettro supports pasting images from the system clipboard, attaching files to
+Bulb supports pasting images from the system clipboard, attaching files to
 your prompt, and copying assistant responses — all directly from the keyboard
 inside the TUI.
 
@@ -11,7 +11,7 @@ directly from the system clipboard into your prompt.
 
 ```text
 1. Copy an image to your clipboard (screenshot, download, etc.)
-2. Inside Spettro, press Ctrl+V
+2. Inside Bulb, press Ctrl+V
 3. An attachment chip appears: "Image #1"
 4. Type your prompt and press Enter — the image is sent alongside your text
 ```
@@ -23,7 +23,7 @@ The image is saved to a temporary directory under
 of the session. Pasted images are **not** persisted across sessions — they are
 ephemeral.
 
-If the model does not support vision, Spettro shows a banner: `current model
+If the model does not support vision, Bulb shows a banner: `current model
 does not support vision` and the paste is ignored.
 
 ### Platform support
@@ -93,7 +93,7 @@ yet`.
 ## Text Select Mode (`Ctrl+T`)
 
 When you need to select text inside the terminal (for copy-paste outside
-Spettro), press `Ctrl+T` to toggle **text-select mode**:
+Bulb), press `Ctrl+T` to toggle **text-select mode**:
 
 - **Mouse capture off** — you can now click-and-drag to select text in your
   terminal emulator.

@@ -213,7 +213,7 @@ func themePreview(pal theme.Palette, innerW int) []string {
 		span(pal.Info, pal.BgBase, "  ● info")
 
 	return []string{
-		row(pal.Text, pal.BgHeader, " ◆ spettro  coding                        thinking:high "),
+		row(pal.Text, pal.BgHeader, " ✿ bulb  coding                           thinking:high "),
 		fill(""),
 		fill(prose),
 		row(pal.Text, pal.BgSelection, "  › a selected row"),

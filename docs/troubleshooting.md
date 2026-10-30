@@ -57,7 +57,7 @@
 ## Text is unreadable on a light terminal
 
 - Run `/theme light`. It repaints immediately and persists the choice.
-- Run bare `/theme` to open the picker and preview each palette, and to see what Spettro detected and which source decided it.
+- Run bare `/theme` to open the picker and preview each palette, and to see what Bulb detected and which source decided it.
 - `auto` degrades to the dark palette whenever the terminal's background cannot
   be determined — a terminal that ignores the OSC 11 query and sets no
   `COLORFGBG`, output redirected to a file, or `TERM=dumb`.
@@ -70,7 +70,7 @@ Terminals disagree on how many cells some emoji take: a sequence joined
 with U+200D (ZERO WIDTH JOINER), such as "woman technologist", is two cells
 in a terminal that clusters graphemes and four in one that does not
 (xterm.js, Terminal.app), and a symbol followed by the emoji variation
-selector U+FE0F is one cell or two. Spettro rewrites those in model text,
+selector U+FE0F is one cell or two. Bulb rewrites those in model text,
 tool output and prompts to a form every terminal measures alike, so table
 borders and the side panel stay in line: a joined sequence shows as its
 parts side by side, the variation selector and skin-tone modifiers are
@@ -104,11 +104,11 @@ A second announce-only reply in the same turn ends it, and so does a second
 dropped-call reply that carries text. A second dropped-call reply with no
 text is an empty reply, so it gets the empty-reply nudges above. None of
 these can loop. To see what the provider actually returned, set
-`SPETTRO_DEBUG_LOG` to a file path before starting spettro (TUI, `--acp` or
+`SPETTRO_DEBUG_LOG` to a file path before starting bulb (TUI, `--acp` or
 `--goal`):
 
 ```bash
-SPETTRO_DEBUG_LOG=/tmp/spettro-debug.log spettro --goal "fix the failing test"
+SPETTRO_DEBUG_LOG=/tmp/bulb-debug.log bulb --goal "fix the failing test"
 ```
 
 Every reply is then logged at debug level with its normalized and raw
@@ -121,11 +121,11 @@ variable nothing is logged.
 
 Streamed requests to OpenAI-compatible endpoints (catalog providers with an
 OpenAI-style API, the Spettro Subscription, local servers) go through
-Spettro's own chat-completions client. To rule it out, send them through the
+Bulb's own chat-completions client. To rule it out, send them through the
 fantasy SDK it replaced, for one run or for good:
 
 ```bash
-SPETTRO_PROVIDER_WIRE=fantasy spettro    # one run
+SPETTRO_PROVIDER_WIRE=fantasy bulb    # one run
 ```
 
 or set `"provider_wire": "fantasy"` in `~/.spettro/config.json` (see
@@ -134,7 +134,7 @@ please report it with the debug log described above.
 
 ## Reset local state
 
-If needed, remove local Spettro state:
+If needed, remove local Bulb state:
 
 ```bash
 rm -rf .spettro

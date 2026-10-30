@@ -1,4 +1,4 @@
-# Spettro Agent Prompt Pack
+# Bulb Agent Prompt Pack
 
 This folder contains prompt files referenced by `spettro.agents.toml`.
 

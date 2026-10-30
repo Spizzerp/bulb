@@ -1,6 +1,6 @@
 # Remote control plane (`/remote`)
 
-Spettro can expose a small local HTTP/SSE control plane so that an external
+Bulb can expose a small local HTTP/SSE control plane so that an external
 process — a script, an editor extension, another TUI — can drive a running
 session: submit prompts, stream live progress (tool calls, comments, agent
 output, banners, approval/ask-user prompts) and request an interrupt.
@@ -196,7 +196,7 @@ user decide must show all of it, or say plainly that it does not; a
 command cut short can look harmless when its end is not.
 
 Each of the two text fields is bounded at 4 MiB, far above anything a
-person reads (the diff of the largest file Spettro diffs at all fits).
+person reads (the diff of the largest file Bulb diffs at all fits).
 Past that the text ends with a line
 `[truncated: N of M bytes not shown; this is not the whole text]`, the
 matching `command_truncated`/`diff_truncated` is `true`, and
@@ -218,7 +218,7 @@ character written out the way the TUI shows it (`^M`, `^[`, `\u202e`,
 remembers) comes with `segments_visible`, the same list written out, when
 one of them holds such a character.
 
-In a headless run (`spettro --headless`), where a client answers approvals, each
+In a headless run (`bulb --headless`), where a client answers approvals, each
 event also carries an `approval_id` (`"a-7"`), and the answer names it:
 
 ```http
@@ -286,7 +286,7 @@ before forms existed keeps working. They describe the question at index
 move through the form; in headless mode it is always the first one.
 
 **Who can answer.** `POST /ask-user` resolves a question only when the run is
-driven headlessly (`spettro --headless`), where the remote client *is* the user. In
+driven headlessly (`bulb --headless`), where the remote client *is* the user. In
 TUI mode the question belongs to the person at the terminal: the event is
 published so a remote client can follow along, and `POST /ask-user` answers
 nothing (`404`) — a Telegram reply is the way in from outside. Everything below

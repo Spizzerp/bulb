@@ -87,7 +87,7 @@ func (m Model) handleExplicitUpdateCheck(msg updateCheckMsg) (tea.Model, tea.Cmd
 		m.showBanner("update check failed: "+msg.err.Error(), "error")
 		return m, nil
 	case msg.rel == nil || !update.IsNewer(version.App, msg.rel.Version):
-		m.showBanner("spettro "+version.App+" is already up to date", "info")
+		m.showBanner("bulb "+version.App+" is already up to date", "info")
 		return m, nil
 	}
 	m.updateAvailable = msg.rel

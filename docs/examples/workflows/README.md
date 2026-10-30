@@ -1,7 +1,7 @@
 # Example workflows
 
 Ready-to-run [workflow](../../workflows.md) scripts. Copy one into a folder
-Spettro discovers and it becomes available by name:
+Bulb discovers and it becomes available by name:
 
 ```bash
 mkdir -p .spettro/workflows                       # this project only

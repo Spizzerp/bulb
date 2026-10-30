@@ -1,6 +1,6 @@
 // Package ui is the legacy line-oriented REPL renderer.
 //
-// It is not reachable from the shipped binary: cmd/spettro dispatches to
+// It is not reachable from the shipped binary: cmd/bulb dispatches to
 // `clean`, -headless, -acp or the Bubble Tea TUI, and none of them constructs
 // an internal/app.App, which is this package's only importer. It is kept, and
 // themed alongside the TUI, so tests/app keeps exercising the non-TUI command

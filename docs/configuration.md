@@ -1,6 +1,6 @@
 # Configuration and Storage
 
-Spettro uses both project-local and user-global storage.
+Bulb uses both project-local and user-global storage.
 
 ## Global (`~/.spettro/`)
 
@@ -52,7 +52,7 @@ key is derived from the random secret in `master.key` (or from
 
 ## Model catalog
 
-The model picker is built from the Spettro provider catalog
+The model picker is built from the Bulb provider catalog
 (`catalog.spettro.app`). Startup never waits for it:
 
 - A cached copy in `~/.spettro/catalog.json` is used when present.
@@ -63,14 +63,14 @@ The model picker is built from the Spettro provider catalog
   request is conditional: it carries the `ETag` and `Last-Modified` the server
   sent with that copy (kept in `catalog-meta.json`), so an unchanged catalog
   is not downloaded again. A cache without that file (written by an older
-  build, or left behind after `spettro clean`) is downloaded again once
+  build, or left behind after `bulb clean`) is downloaded again once
   stale.
 - Long sessions re-check hourly under the same rule. The cache is shared by
-  every spettro process: when another one (an ACP server, a second TUI) has
+  every bulb process: when another one (an ACP server, a second TUI) has
   downloaded a newer catalog, a running session switches to it at its next
   hourly check, without a request of its own.
 
-Local endpoints (`local_endpoints` in `config.json`) and the Spettro
+Local endpoints (`local_endpoints` in `config.json`) and the Bulb
 Subscription model list are also fetched in the background. Their models
 appear in the TUI as each server answers. A result that arrives after you
 removed or re-probed that endpoint (or signed out of the subscription) is
@@ -132,27 +132,27 @@ before the first frame, then asks the terminal itself with an OSC 11 background
 query and revises the palette when the answer arrives; it degrades to dark
 whenever the background cannot be determined — including on a terminal that
 cannot be asked at all, where `COLORFGBG` is an inherited value describing
-whatever launched Spettro rather than Spettro's own terminal.
+whatever launched Bulb rather than Bulb's own terminal.
 
 `SPETTRO_THEME` is a startup override, not a lock: `/theme` still repaints and
 still saves while it is set, and the variable takes the palette back on the next
 start.
 
 ```bash
-SPETTRO_THEME=light spettro     # override for one run
+SPETTRO_THEME=light bulb     # override for one run
 ```
 
 ## Provider wire
 
 Which client carries streamed requests to OpenAI-compatible chat-completions
-endpoints: catalog providers with an OpenAI-style API, the Spettro
+endpoints: catalog providers with an OpenAI-style API, the Bulb
 Subscription and local servers. Anthropic-protocol providers, the official
 `openai` provider (Responses API) and non-streamed requests always use the
 fantasy SDK.
 
 | `config.json` key | Default | Meaning |
 | --- | --- | --- |
-| `provider_wire` | `""` (treated as `native`) | `native`: Spettro's own client, which re-encodes only the messages a step added and decodes streamed tool calls in linear time. `fantasy`: the fantasy SDK, as before the native client existed. An unknown value means `native`. |
+| `provider_wire` | `""` (treated as `native`) | `native`: Bulb's own client, which re-encodes only the messages a step added and decodes streamed tool calls in linear time. `fantasy`: the fantasy SDK, as before the native client existed. An unknown value means `native`. |
 
 `SPETTRO_PROVIDER_WIRE` (`native` or `fantasy`) overrides the key for one
 process. Both clients send the same request JSON and report replies, errors
@@ -170,7 +170,7 @@ last on replies where fantasy fails or loses data:
   request);
 - tool arguments that do not start as a JSON object, array or string stop
   being re-checked for completeness after 4 KB;
-- requests carry the User-Agent `Spettro/<version>`.
+- requests carry the User-Agent `Bulb/<version>`.
 
 Like the SDK, the native client sends `OPENAI_ORG_ID` and
 `OPENAI_PROJECT_ID`, when set, as the `OpenAI-Organization` and
@@ -183,7 +183,7 @@ released after 5 minutes without use.
 
 ## Notifications
 
-When the terminal is unfocused (or a run took more than 10 s), Spettro alerts
+When the terminal is unfocused (or a run took more than 10 s), Bulb alerts
 you on run/goal completion, on errors, and when the agent is waiting for a
 command approval or an answer. Alerts go out on two channels at once: an OSC 9
 terminal escape sequence — rendered as a system notification by iTerm2,
@@ -236,7 +236,7 @@ for how each key behaves.
 
 ## Storage cleanup
 
-Session policy for `/storage clean` and `spettro clean`; see
+Session policy for `/storage clean` and `bulb clean`; see
 [Storage](storage.md) for the full artifact inventory.
 
 | `config.json` key | Default | Meaning |
@@ -271,7 +271,7 @@ Session policy for `/storage clean` and `spettro clean`; see
 
 ### Commit co-authoring (mandatory)
 
-- Every commit Spettro produces — directly via the built-in committer or indirectly when an agent runs `git commit` through the `bash` tool — carries the trailer `Co-Authored-By: Spettro <spettro@eyed.to>`.
+- Every commit Bulb produces — directly via the built-in committer or indirectly when an agent runs `git commit` through the `bash` tool — carries the trailer `Co-Authored-By: Spettro <spettro@eyed.to>`.
 - The trailer is auto-injected by the runtime when missing. It is idempotent: if you (or the agent) already supplied the trailer, no second copy is added.
 - Only the porcelain `git commit` is rewritten; plumbing such as `git commit-tree` is left untouched.
 
@@ -287,7 +287,7 @@ Session policy for `/storage clean` and `spettro clean`; see
 
 ## Agent manifest
 
-Spettro loads `spettro.agents.toml` from the project root if present; otherwise it falls back to built-ins.
+Bulb loads `spettro.agents.toml` from the project root if present; otherwise it falls back to built-ins.
 
 See [`AGENTS.md`](../AGENTS.md) for full schema and validation. The
 snippet below shows the root and `[runtime]` fields only; a complete manifest
@@ -311,7 +311,7 @@ log_tool_calls = true
 
 ## OS sandbox
 
-Spettro can confine the agent at the kernel level — Seatbelt (`sandbox-exec`) on
+Bulb can confine the agent at the kernel level — Seatbelt (`sandbox-exec`) on
 macOS, Landlock on Linux. It is **opt-in** and off by default; it complements
 (never replaces) the approval gates. The boundary is **invisible to the model**:
 there is no sandbox tool and no prompt advertisement, blocked operations look
@@ -321,11 +321,11 @@ like ordinary failures, and the policy is set only by the operator (CLI flag or
 Activation precedence: CLI flags > `spettro.agents.toml` > off.
 
 ```sh
-spettro --sandbox workspace-write                  # writes -> workspace + temp; reads confined
-spettro --sandbox read-only --sandbox-net none     # no project/user writes, no network
-spettro --sandbox-net ports:443                    # TCP confined to port 443 (any host)
-spettro --sandbox workspace-write --sandbox-allow-dir /data        # extra writable root (repeatable)
-spettro --sandbox read-only --sandbox-allow-read-dir ~/go/pkg/mod  # extra readable root (repeatable)
+bulb --sandbox workspace-write                  # writes -> workspace + temp; reads confined
+bulb --sandbox read-only --sandbox-net none     # no project/user writes, no network
+bulb --sandbox-net ports:443                    # TCP confined to port 443 (any host)
+bulb --sandbox workspace-write --sandbox-allow-dir /data        # extra writable root (repeatable)
+bulb --sandbox read-only --sandbox-allow-read-dir ~/go/pkg/mod  # extra readable root (repeatable)
 ```
 
 What is guarded:
@@ -341,10 +341,10 @@ What is guarded:
   (e.g. `~/go/pkg/mod`, `~/.cache`) are blocked too, so add them with
   `--sandbox-allow-read-dir` when building under the sandbox.
 - **Network** — `none` denies it, `localhost` allows loopback only,
-  `ports:443,8080` allows those TCP ports (any host). The spettro process keeps
+  `ports:443,8080` allows those TCP ports (any host). The bulb process keeps
   network access for the LLM API, so the agent always reaches its model even
   under `net=none`.
-- **The spettro process itself** — write-confined as defense-in-depth (Landlock
+- **The bulb process itself** — write-confined as defense-in-depth (Landlock
   in-process on Linux; a one-time `sandbox-exec` re-exec on macOS). Its reads
   stay open so the in-process git committer and skill discovery keep working;
   the model's own read surface is confined at the shell and file-tool layers.

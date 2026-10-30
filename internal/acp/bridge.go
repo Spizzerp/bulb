@@ -249,7 +249,7 @@ func (b *bridge) Initialize(_ context.Context, params acpsdk.InitializeRequest) 
 		},
 		AgentInfo: &acpsdk.Implementation{
 			Name:    "spettro",
-			Title:   new("Spettro"),
+			Title:   new("Bulb"),
 			Version: version.App,
 		},
 		AgentCapabilities: acpsdk.AgentCapabilities{
@@ -270,11 +270,11 @@ func (b *bridge) Initialize(_ context.Context, params acpsdk.InitializeRequest) 
 					Id:   "spettro-setup",
 					Name: "Configure a provider",
 					Description: new(
-						"Launch Spettro's own interactive TUI (no --acp flag) and " +
+						"Launch Bulb's own interactive TUI (no --acp flag) and " +
 							"run /models to add a provider API key; ACP sessions " +
 							"reuse that stored configuration.",
 					),
-					// No extra args: the plain `spettro` invocation already opens
+					// No extra args: the plain `bulb` invocation already opens
 					// the interactive TUI where /models manages provider keys.
 					Args: []string{},
 				},

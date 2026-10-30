@@ -137,10 +137,10 @@ func (m *Model) dispatchTelegramEvent(kind string, data map[string]any) {
 func telegramQuestionHeading(data map[string]any) string {
 	count, _ := data["count"].(int)
 	if count <= 1 {
-		return "❓ Spettro is asking:"
+		return "❓ Bulb is asking:"
 	}
 	active, _ := data["active"].(int)
-	return fmt.Sprintf("❓ Spettro is asking (question %d of %d):", active+1, count)
+	return fmt.Sprintf("❓ Bulb is asking (question %d of %d):", active+1, count)
 }
 
 // telegramBroadcastAsync sends text on a worker goroutine so the TUI's

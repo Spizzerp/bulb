@@ -1,4 +1,4 @@
-<img src="Logo.png" alt="Spettro logo" width="360" />
+<img src="assets/bulbpp.png" alt="Bulb logo" width="200" />
 
 [![Go 1.26+](https://img.shields.io/badge/Go-1.26%2B-00ADD8?logo=go)](https://go.dev/)
 [![UI Bubble Tea](https://img.shields.io/badge/UI-Bubble%20Tea-ff69b4)](https://github.com/charmbracelet/bubbletea)
@@ -6,7 +6,7 @@
 [![Status](https://img.shields.io/badge/status-stable-brightgreen)](#)
 [![License](https://img.shields.io/badge/License-GPL--3.0-green)](LICENSE)
 
-Spettro is a terminal-first multi-agent coding assistant written in Go.
+Bulb is a terminal-first multi-agent coding assistant written in Go.
 
 # Quick install
 
@@ -24,13 +24,13 @@ Windows (PowerShell):
 irm https://raw.githubusercontent.com/aploide/spettro/main/install.ps1 | iex
 ```
 
-Installs to `%LOCALAPPDATA%\Programs\spettro` and adds it to your user `PATH` — no elevation, so `/update` works in place too. See [`docs/windows.md`](docs/windows.md) for what differs on Windows.
+Installs to `%LOCALAPPDATA%\Programs\bulb` and adds it to your user `PATH` — no elevation, so `/update` works in place too. See [`docs/windows.md`](docs/windows.md) for what differs on Windows.
 
 The piped form above takes no arguments. To pass `-InstallDir` (install elsewhere), `-Version` (pin a release) or `-NoPathUpdate` (leave `PATH` alone), download the script and run it:
 
 ```powershell
 irm https://raw.githubusercontent.com/aploide/spettro/main/install.ps1 -OutFile install.ps1
-.\install.ps1 -InstallDir D:\tools\spettro -Version v1.2.3 -NoPathUpdate
+.\install.ps1 -InstallDir D:\tools\bulb -Version v1.2.3 -NoPathUpdate
 ```
 
 It uses a configurable agent manifest (`spettro.agents.toml` + `agents/*.md` prompts), parallel sub-agent spawning via native tool calls and an `agent` tool, plus specialized orchestrator/worker roles (plan, coding, ask, explore, code, git, test, review, docs).
@@ -58,16 +58,16 @@ Requirements:
 - Go `1.26.1+`
 
 ```bash
-git clone https://github.com/aploide/spettro
-cd spettro
+git clone https://github.com/aploide/spettro bulb
+cd bulb
 make build
-./bin/spettro
+./bin/bulb
 ```
 
 Alternative:
 
 ```bash
-go run ./cmd/spettro
+go run ./cmd/bulb
 ```
 
 ## First-time setup
@@ -81,10 +81,10 @@ At first launch:
 
 ## Common commands
 
-Spettro commands are entered with a leading `/`.
+Bulb commands are entered with a leading `/`.
 
 - `/help` show help text
-- `/exit`, `/quit` quit Spettro
+- `/exit`, `/quit` quit Bulb
 - `/mode`, `/next` cycle active agent/mode
 - `/theme` opens the colour [theme](docs/theme.md) picker (preview dark / light / auto and apply); `/theme <dark|light|auto>` sets one directly. `auto` detects the terminal background (default). `SPETTRO_THEME` picks the palette at startup
 - `/connect` connect provider or local endpoint
@@ -110,14 +110,14 @@ Spettro commands are entered with a leading `/`.
 - `/init` analyze the repo and create/update `SPETTRO.md`
 - `/remote [:port]` expose a loopback HTTP/SSE control plane (see [`docs/remote.md`](docs/remote.md))
 - `/remote local [:port]` expose the control plane to LAN devices on `0.0.0.0` (see [`docs/remote.md`](docs/remote.md))
-- `/telegram setup <token>` configure a Telegram bot relay so you can drive Spettro from a chat (see [`docs/telegram.md`](docs/telegram.md)). Alias: `/tg`.
+- `/telegram setup <token>` configure a Telegram bot relay so you can drive Bulb from a chat (see [`docs/telegram.md`](docs/telegram.md)). Alias: `/tg`.
 - `/<custom> [args]` run your own saved prompts from `~/.spettro/commands/` or `.spettro/commands/` (see [`docs/custom-commands.md`](docs/custom-commands.md))
 
 For full commands and keybindings, see [`docs/commands.md`](docs/commands.md).
 
 ## Editor integration (ACP)
 
-`spettro --acp` runs Spettro as an [Agent Client Protocol](https://agentclientprotocol.com)
+`bulb --acp` runs Bulb as an [Agent Client Protocol](https://agentclientprotocol.com)
 agent over stdio, so ACP-capable editors like Zed can drive it from their
 native agent panel — with streamed reasoning, tool call reporting, mode
 switching, and permission prompts. See [`docs/acp.md`](docs/acp.md).

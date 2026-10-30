@@ -1,15 +1,15 @@
 # Checkpointing and Rewind
 
-Spettro automatically snapshots the project working tree before every agent
+Bulb automatically snapshots the project working tree before every agent
 step that modifies files, so you can rewind files and/or conversation to any
 earlier step — like a time machine for your coding session.
 
 ## How it works
 
-Checkpointing is built on a **shadow git repository** stored in Spettro's data
+Checkpointing is built on a **shadow git repository** stored in Bulb's data
 directory, completely separate from the project's own `.git`. Before the
 first `file-write`, `file-edit`, shell command or similar write
-tool of each step (one model reply), Spettro:
+tool of each step (one model reply), Bulb:
 
 1. Stages all changes in the project working tree.
 2. Commits to the shadow repo with a label describing the pending tool call.
@@ -24,7 +24,7 @@ rewinding to it undoes the whole step.
 Staging and committing the tree is the expensive part of a snapshot (several
 git processes over the whole tree). Nothing is supposed to change the tree
 while the model is generating a step, so once a run has taken its first
-checkpoint, Spettro does that part for each later step as soon as the step's
+checkpoint, Bulb does that part for each later step as soon as the step's
 request is sent, in the background. When the step's first mutating call
 arrives, it only records the prepared snapshot as the checkpoint (a list
 entry and the conversation blob, no git process), so the call no longer waits
@@ -37,7 +37,7 @@ the tree. The step that ends an editing run (the model's final answer) still
 prepares a snapshot that no call claims; that is one discarded preparation per
 editing run, done while the model writes its answer.
 
-Spettro falls back to taking the snapshot when the call arrives:
+Bulb falls back to taking the snapshot when the call arrives:
 
 - while a background shell job or a pty session is running (it can change
   files at any moment);
@@ -65,7 +65,7 @@ read-only shell commands) and it is less than 30 seconds old; otherwise the
 next step prepares a new one and the unclaimed commit is unpinned. An
 unclaimed commit left by an exit is unpinned by the next session that opens
 the project's checkpoints once it is two minutes old. Younger ones are left
-alone, because another Spettro session on the same project may still claim
+alone, because another Bulb session on the same project may still claim
 its own.
 
 **Limitation.** A file the agent never read or wrote that another program
@@ -95,7 +95,7 @@ snapshot the main checkout, since their edits land outside it; instead a
 snapshot is taken right before their branch is merged back.
 
 The shadow repository lives under `~/.spettro/history/<project-hash>/repo.git`.
-It has its own identity (`spettro <spettro@localhost>`), its own config, and
+It has its own identity (`Spettro <spettro@eyed.to>`), its own config, and
 its own hooks path — nothing in the user's git config or hooks can interfere.
 The project's `.gitignore` files are honoured, so build artifacts and
 dependencies are never tracked.
@@ -136,7 +136,7 @@ Checkpointing is engineered to not duplicate your repository:
   reflogs are disabled so pruned checkpoints can actually be collected.
 - **Cached index file.** `checkpoints.json` is kept in memory between
   snapshots and re-read only when its size or modification time changes (for
-  example, another Spettro session on the same project added a checkpoint).
+  example, another Bulb session on the same project added a checkpoint).
 - **Retention.** On open (never in the per-snapshot hot path), checkpoints
   older than `checkpoint_retention_days` (default 14) are pruned: list
   entries and conversation blobs are deleted, their pinning refs
@@ -157,7 +157,7 @@ All keys live in `config.json` — see
 Because the shadow repo borrows objects from your project's `.git`, an
 aggressive `git gc --prune` in the project can delete objects an old
 checkpoint still needs. Checkpoints are a convenience cache, so this is
-accepted: before restoring, Spettro verifies every object is reachable and
+accepted: before restoring, Bulb verifies every object is reachable and
 fails with a clear "checkpoint is no longer restorable" error instead of
 corrupting the working tree. Newer checkpoints are unaffected.
 
@@ -171,7 +171,7 @@ Prints the number of checkpoints for the current project, the shadow-store
 disk usage for this project and across all projects under
 `~/.spettro/history/`, and the store path. To reclaim checkpoint history
 across projects (including orphaned entries for moved/deleted projects), use
-[`/storage clean` or `spettro clean`](storage.md).
+[`/storage clean` or `bulb clean`](storage.md).
 
 ### Requirements
 
